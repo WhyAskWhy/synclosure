@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 __author__ = "Raphael Balimann (spam@raphb.ch)"
-__version__ = "$Revision: 0.1 $"
+__version__ = "$Revision$"
 __copyright__ = "Copyright (c) 2004 Raphael Balimann"
 
 """
