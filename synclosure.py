@@ -69,24 +69,11 @@ optParser.add_option( "-a", "--action", action="append", dest="action_list", nar
 optParser.add_option( "-d", "--destination", action="store",
     dest="destination", help="Destination folder for downloaded files")
 
-(options, remainingArgs) = optParser.parse_args()
+(cmdlineOptions, remainingArgs) = optParser.parse_args()
 
-includes, excludes, action_list, destination = options.includes, options.excludes, \
-    options.action_list, options.destination
-    
+includes, excludes, action_list, destination = cmdlineOptions.includes, cmdlineOptions.excludes, \
+    cmdlineOptions.action_list, cmdlineOptions.destination
 
-#define download folter, etc
-if destination and os.path.isdir(destination) and not os.path.isfile(destination):
-    downloadfolder = destination
-else:
-    downloadfolder = 'media'
-
-if not os.path.isdir(downloadfolder):
-    try:
-            os.mkdir(downloadfolder)
-    except:
-            sys.exit(nl+'[error] cannot create download folder (' + downloadfolder + ') ' \
-            'check permissions')
 
 # pickle this or something. ugly.
 defaultfeedlist = '# Default list of xml feeds with enclosures\n# this is a comment\n' \
@@ -136,6 +123,20 @@ for feed in feedlist:
 
                     try:
                         print 'downloading: ' + enclosure[-60:]
+
+                        #define download folder, etc
+                        if destination and os.path.isdir(cmdlineOptions.destination) and not os.path.isfile(cmdlineOptions.destination):
+                            downloadfolder = cmdlineOptions.destination
+                        else:
+                            downloadfolder = parsed.feed.title.replace(' ', '')
+
+                        if not os.path.isdir(downloadfolder):
+                            try:
+                                    os.mkdir(downloadfolder)
+                            except:
+                                    sys.exit(nl+'[error] cannot create download folder (' + downloadfolder + ') ' \
+                                    'check permissions')
+                        
                         enclosurefilename = os.path.join(downloadfolder, os.path.basename(enclosure))
                         urllib.urlretrieve(enclosure, enclosurefilename.replace('%20', ' '))
                         WriteFile(cache, enclosure+'\n')
