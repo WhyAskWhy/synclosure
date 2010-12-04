@@ -42,11 +42,13 @@ def WriteFile(filename, msg):
 
 #load a file into a list, ignore lines beginning with a '#'
 def ParseFile(filename):
+    """Parse file into list for iterating through"""
     result = []
     if os.access(filename, os.W_OK) and os.path.isfile(filename):
         f = open(filename)
         for line in f.xreadlines():
-            if line[0] == '#': continue
+            #If line is commented out or contains nothing but whitespace then do not add it to feedlist
+            if line[0] == '#' or line.isspace(): continue
             result.append(line[:-1])
         f.close()
     else:
