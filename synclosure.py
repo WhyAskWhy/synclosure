@@ -59,6 +59,7 @@ def main():
         print '-' * 65, "\n"
 
     def WriteFile(filename, msg):
+        """Wrapper to safely read/write content to source and cache files"""
         if os.access(filename, os.W_OK) and os.path.isfile(filename):
             f = open(filename, 'a')
             f.write(msg)
@@ -69,8 +70,8 @@ def main():
                 f.write(msg)
                 f.close()
             except:
-                print nl+'[error] couldnt create/access/read file (' + filename + '), ' \
-                    'check permissions.'+nl
+                print nl+'[error] couldnt create/access/read file (' \
+                    + filename + '), ' + 'check permissions.'+nl
                 return False
 
     #load a file into a list, ignore lines beginning with a '#'
