@@ -133,13 +133,16 @@ def main():
 
     feedcount = len(feedlist)
     for feed in feedlist:
-        # Don't echo 'parsing' for empty lines
-        if len(feed) != 0: 
-            # Show a countdown of the remaining feeds to be parsed (after this one) using 5 digit padding
-            print '[%.5d left]' % (feedcount -1), 'parsing: ' + feed[-55:]
-            feedcount -= 1
+        print "Beginnging feed processing ..."
         try:
             parsed = feedparser.parse(feed, agent=__product__)
+
+            # Don't echo 'parsing' for empty lines
+            if len(feed) != 0: 
+                # Show a countdown of the remaining feeds to be parsed (after this one) using 5 digit padding
+                print '[%.5d left]' % (feedcount -1), 'parsing: ' + parsed['feed']['title']
+                feedcount -= 1
+
         except KeyboardInterrupt:
             sys.exit(nl+'[error] parsing interrupted')
             
