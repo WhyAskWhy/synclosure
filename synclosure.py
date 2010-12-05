@@ -1,15 +1,26 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
 
-__author__ = "Raphael Balimann (spam@raphb.ch)"
-__version__ = "$Revision$"
-__copyright__ = "Copyright (c) 2004 Raphael Balimann"
 
 """
 Synclosure automatically downloads files found in RSS enclosures.
 """
 
-import feedparser, sys, os, urllib, ConfigParser, os
+# $Id$
+# $HeadURL$
+
+__author__ = "Raphael Balimann (spam@raphb.ch)"
+__version__ = "$Revision$"
+__copyright__ = "Copyright (c) 2004 Raphael Balimann"
+
+# Built-in modules
+import sys
+import os
+import urllib
+import ConfigParser
+
+# 3rd party module, included in repo
+# Homepage: http://www.feedparser.org/
+import feedparser
 
 
 #customized user agent, python docs to urllib
