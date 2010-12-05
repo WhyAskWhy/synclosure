@@ -196,7 +196,7 @@ def main():
                             sys.exit(nl+'[error] interrupted. file ('\
                                 +os.path.basename(enclosure)+') unfinished')
 
-
+    print "\nAll feeds parsed. Thank you for using",  __product__
 
 if __name__ == "__main__":
     main()
