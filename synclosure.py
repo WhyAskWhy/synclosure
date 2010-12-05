@@ -39,7 +39,7 @@ def main():
     #customized user agent, python docs to urllib
     class AppURLopener(urllib.FancyURLopener):
         def __init__(self, *args):
-            self.version = "Synclosure 0.1"
+            self.version = __product__
             urllib.FancyURLopener.__init__(self, *args)
     urllib._urlopener = AppURLopener()
 
@@ -139,7 +139,7 @@ def main():
             print '[%.5d left]' % (feedcount -1), 'parsing: ' + feed[-55:]
             feedcount -= 1
         try:
-            parsed = feedparser.parse(feed, agent="Synclosure 0.1")
+            parsed = feedparser.parse(feed, agent=__product__)
         except KeyboardInterrupt:
             sys.exit(nl+'[error] parsing interrupted')
             
