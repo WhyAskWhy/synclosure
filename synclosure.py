@@ -8,10 +8,6 @@ Synclosure automatically downloads files found in RSS enclosures.
 # $Id$
 # $HeadURL$
 
-__author__ = "Raphael Balimann (spam@raphb.ch)"
-__version__ = "$Revision$"
-__copyright__ = "Copyright (c) 2004 Raphael Balimann"
-
 # Built-in modules
 import sys
 import os
@@ -22,6 +18,9 @@ import ConfigParser
 # Homepage: http://www.feedparser.org/
 import feedparser
 
+__author__ = "Raphael Balimann (spam@raphb.ch)"
+__version__ = "$Revision$"
+__copyright__ = "Copyright (c) 2004 Raphael Balimann"
 
 #customized user agent, python docs to urllib
 class AppURLopener(urllib.FancyURLopener):
