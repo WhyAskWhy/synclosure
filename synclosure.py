@@ -99,8 +99,13 @@ if not oldenclosures: #cache empty, create new file
     WriteFile(cache, '')
     oldenclosures = ParseFile(cache)
 
+feedcount = len(feedlist)
 for feed in feedlist:
-    print 'parsing: ' + feed[-60:]
+    # Don't echo 'parsing' for empty lines
+    if len(feed) != 0: 
+        # Show a countdown of the remaining feeds to be parsed (after this one) using 5 digit padding
+        print '[%.5d left]' % (feedcount -1), 'parsing: ' + feed[-55:]
+        feedcount -= 1
     try:
         parsed = feedparser.parse(feed, agent="Synclosure 0.1")
     except KeyboardInterrupt:
