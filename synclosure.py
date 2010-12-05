@@ -13,14 +13,22 @@ import sys
 import os
 import urllib
 import ConfigParser
+import re
 
 # 3rd party module, included in repo
 # Homepage: http://www.feedparser.org/
 import feedparser
 
+# Strip out everything except for numbers from the svn Revision property
+__version__ = "dev-r" + re.sub(r'[^0-9]', '', "$Revision$") + "-svn"
+
 __author__ = "Raphael Balimann (spam@raphb.ch)"
-__version__ = "$Revision$"
-__copyright__ = "Copyright (c) 2004 Raphael Balimann"
+__copyright__ = """Copyright (c) 2004 Raphael Balimann
+Copyright (c) 2007 deoren of WhyAskWhy.org"""
+__license__ = "Licensed under the GPL.  See License.txt for details."
+__product__ = "Synclosure %s" % __version__
+
+__contributors__ = ["deoren <http://whyaskwhy.org/>",]
 
 #customized user agent, python docs to urllib
 class AppURLopener(urllib.FancyURLopener):
@@ -34,6 +42,15 @@ feedlist, enclosures, oldenclosures, nl = [], [], [], '\n'
 
 #OptParse is a pain, so as of now i'm sticking to that custom format
 configfile, cache = 'sources.ini', 'cache.ini'
+
+def ShowProductInfo():
+    """Print out app name, version, copyright and license info"""
+    # FIXME: Improve this     
+    print "\n",__product__, "\n"
+    print '-' * 65
+    print __copyright__
+    print __license__
+    print '-' * 65, "\n"
 
 def WriteFile(filename, msg):
     if os.access(filename, os.W_OK) and os.path.isfile(filename):
@@ -65,6 +82,7 @@ def ParseFile(filename):
         return False
     return result
 
+ShowProductInfo()
 
 #parse command line arguments, 'sys.argv'
 from optparse import *
