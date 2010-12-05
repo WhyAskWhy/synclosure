@@ -111,15 +111,26 @@ def main():
 
 
     # pickle this or something. ugly.
-    defaultfeedlist = '# Default list of xml feeds with enclosures\n# this is a comment\n' \
-            'http://radio.weblogs.com/0001014/categories/dailySourceCode/rss.xml\n' \
-            'http://www.evilgeniuschronicles.org/cgi-bin/blosxom.cgi/index.rss\n' \
-            'http://www.itconversations.com/rss/recentWithEnclosures.php\n' \
-            'http://www.blogdigger.com/media/avi.xml\n' \
-            'http://www.blogdigger.com/media/mp3.xml\n' \
-            'http://www.blogdigger.com/media/mov.xml\n' \
-            'http://www.blogdigger.com/media/wmv.xml\n' \
-            'http://www.scripting.com/rss.xml\n'
+    defaultfeedlist = \
+    """# Default list of xml feeds with enclosures
+    # this is a comment 
+    # See http://projects.whyaskwhy.org/projects/synclosure/ for more information.
+    http://radio.weblogs.com/0001014/categories/dailySourceCode/rss.xml 
+    http://www.evilgeniuschronicles.org/cgi-bin/blosxom.cgi/index.rss 
+    http://www.itconversations.com/rss/recentWithEnclosures.php 
+    http://www.blogdigger.com/media/avi.xml 
+    http://www.blogdigger.com/media/mp3.xml 
+    http://www.blogdigger.com/media/mov.xml 
+    http://www.blogdigger.com/media/wmv.xml 
+    http://www.scripting.com/rss.xml
+    http://www.cnet.com/i/pod/cnet_buzz.xml
+    http://leo.am/podcasts/sn/
+    http://feeds.feedburner.com/dailybreakfast
+    http://feeds.feedburner.com/KathyMaistersStartCookingVideoCast
+    http://radio.linuxquestions.org/syndicate/lq.php
+    http://www.abc.net.au/rn/podcast/feeds/science.xml
+    http://www.daveramsey.com/media/audio/podcast/podcast_itunes.xml
+    """
 
     feedlist = ParseFile(configfile) #load rss list
     oldenclosures = ParseFile(cache) #load downloaded files list
