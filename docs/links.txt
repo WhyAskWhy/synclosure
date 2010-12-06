@@ -1,0 +1,63 @@
+$Id$
+$HeadURL$
+
+Urls listed here were helpful in modifying synclosure to meet my needs.
+
+Thanks to everyone who provided the information on the Internet for others
+to learn from.
+
+
+http://irc-archive.com/read/FreeNode/python/2006-12-21/5/page/4
+    Info on urllib2, KeyboardException
+
+http://www.amk.ca/python/howto/regex/regex.html#SECTION000620000000000000000
+    Regular Expression HOWTO
+
+http://marc.info/?l=python-list&m=115767979502316&w=2
+    Heavily influenced GetFinalUrl (from rev 5)
+
+http://patchwork.ozlabs.org/bazaar-ng/patch?id=7636
+    Gave me the idea to use a counter for function recursion interations
+
+http://svn.0pointer.de/viewvc/trunk/feed/sse_grab.py?revision=49&root=sse&view=markup&pathrev=49
+    Showed me how I could use urlopen instead of urlretrieve so removal of file upon
+    user interupption was possible. 
+
+http://mail.python.org/pipermail/python-list/2006-September/401864.html
+    Some pretty neat ideas for possible future modifications.
+    
+http://effbot.org/pyfaq/
+    Good stuff
+
+http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66062
+    Found out how to get current: function name and lineno
+
+http://ask.metafilter.com/69483/Python-beginner-with-an-exception-handling-question
+    May be useful in the future with handling specific IOError exceptions
+
+http://effbot.org/librarybook/timing.htm
+    Great timing example.  Helped me choose which filtering approach to take
+    for valid file/folder names.
+    
+http://docs.python.org/lib/typesseq-mutable.html
+http://docs.python.org/tut/node7.html
+    Reminded me of the pop() method for lists
+    
+http://diveintopython.org/
+    Great stuff.
+
+http://www.python.org/doc/essays/styleguide.html
+    I'll need to verify that the code matches the guidelines.
+    
+http://docs.python.org/lib/socket-objects.html
+    "Hanging" downloads from problematic servers
+
+http://www.python.org/doc/current/lib/node546.html
+    Handling timeouts
+
+http://mail.python.org/pipermail/python-list/2004-April/260459.html
+    One major difference between urllib and urllib2: 
+    HTTPError status codes
+    
+http://mail.python.org/pipermail/python-list/2004-January/243301.html
+    Opening files in wb mode instead of just w mode on Windows.
