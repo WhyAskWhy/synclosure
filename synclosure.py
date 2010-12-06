@@ -379,8 +379,8 @@ def main():
         oldenclosures = ParseFile(cache)
 
     feedcount = len(feedlist)
+    print "Beginnging feed processing ..."
     for feed in feedlist:
-        print "Beginnging feed processing ..."
         try:
             parsed = feedparser.parse(feed, agent=__product__)
 
