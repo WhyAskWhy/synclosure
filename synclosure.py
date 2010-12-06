@@ -410,7 +410,7 @@ def main():
                                 continue
 
                         try:
-                            print 'downloading: ' + enclosure[-60:]
+                            print 'downloading: ' + enclosure.split("/")[-1]
 
                             #define download folder, etc
                             if destination and os.path.isdir(cmdlineOptions.destination) and not os.path.isfile(cmdlineOptions.destination):
