@@ -351,7 +351,7 @@ def main():
     # this is a comment 
     # See http://projects.whyaskwhy.org/projects/synclosure/ for more information.
     http://radio.weblogs.com/0001014/categories/dailySourceCode/rss.xml 
-    http://www.evilgeniuschronicles.org/cgi-bin/blosxom.cgi/index.rss 
+    http://www.evilgeniuschronicles.org/audio/podcast.xml 
     http://www.itconversations.com/rss/recentWithEnclosures.php 
     http://www.blogdigger.com/media/avi.xml 
     http://www.blogdigger.com/media/mp3.xml 
