@@ -384,7 +384,14 @@ def main():
         try:
             parsed = feedparser.parse(feed, agent=__product__)
 
+            # If parser did not find a title from the feed url, consider it
+            # to be invalid ...
+            if not 'title' in parsed['feed']:
+                print "[WARNING] Skipping invalid feed: %s \n" % feed
+                continue
+
             # Don't echo 'parsing' for empty lines
+            # FIXME: Isn't this already being handled by ParseFile?
             if len(feed) != 0: 
                 # Show a countdown of the remaining feeds to be parsed (after this one) using 5 digit padding
                 print '[%.5d left]' % (feedcount -1), 'parsing: ' + parsed['feed']['title']
