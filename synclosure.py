@@ -350,33 +350,34 @@ def main():
         cmdlineOptions.action_list, cmdlineOptions.destination
 
 
-    # pickle this or something. ugly.
-    defaultfeedlist = \
-    """# Default list of xml feeds with enclosures
-    # this is a comment 
-    # See http://projects.whyaskwhy.org/projects/synclosure/ for more information.
-    http://radio.weblogs.com/0001014/categories/dailySourceCode/rss.xml 
-    http://www.evilgeniuschronicles.org/audio/podcast.xml 
-    http://www.itconversations.com/rss/recentWithEnclosures.php 
-    http://www.blogdigger.com/media/avi.xml 
-    http://www.blogdigger.com/media/mp3.xml 
-    http://www.blogdigger.com/media/mov.xml 
-    http://www.blogdigger.com/media/wmv.xml 
-    http://www.scripting.com/rss.xml
-    http://www.cnet.com/i/pod/cnet_buzz.xml
-    http://leo.am/podcasts/sn/
-    http://feeds.feedburner.com/dailybreakfast
-    http://feeds.feedburner.com/KathyMaistersStartCookingVideoCast
-    http://radio.linuxquestions.org/syndicate/lq.php
-    http://www.abc.net.au/rn/podcast/feeds/science.xml
-    http://www.daveramsey.com/media/audio/podcast/podcast_itunes.xml
-    """
+    defaultfeedlist = [
+    '# Default list of xml feeds with enclosures',
+    '#this is a comment',
+    '#See http://projects.whyaskwhy.org/projects/synclosure/ for more information.',
+    'http://radio.weblogs.com/0001014/categories/dailySourceCode/rss.xml',
+    'http://www.evilgeniuschronicles.org/audio/podcast.xml',
+    'http://www.itconversations.com/rss/recentWithEnclosures.php',
+    'http://www.blogdigger.com/media/avi.xml',
+    'http://www.blogdigger.com/media/mp3.xml',
+    'http://www.blogdigger.com/media/mov.xml',
+    'http://www.blogdigger.com/media/wmv.xml',
+    'http://www.scripting.com/rss.xml',
+    'http://www.cnet.com/i/pod/cnet_buzz.xml',
+    'http://leo.am/podcasts/sn/',
+    'http://feeds.feedburner.com/dailybreakfast',
+    'http://feeds.feedburner.com/KathyMaistersStartCookingVideoCast',
+    'http://radio.linuxquestions.org/syndicate/lq.php',
+    'http://www.abc.net.au/rn/podcast/feeds/science.xml',
+    'http://www.daveramsey.com/media/audio/podcast/podcast_itunes.xml',
+    ]
 
     feedlist = ParseFile(configfile) #load rss list
     oldenclosures = ParseFile(cache) #load downloaded files list
 
     if not feedlist: #feedlist empty, create default
-        WriteFile(configfile, defaultfeedlist)
+        for feed in defaultfeedlist:
+            WriteFile(configfile, feed.strip() + '\n')
+
         feedlist = ParseFile(configfile)
         
     if not oldenclosures: #cache empty, create new file
