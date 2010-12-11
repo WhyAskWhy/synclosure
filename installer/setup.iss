@@ -4,7 +4,7 @@
 #define MyAppName "Synclosure"
 
 ; FIXME: Generate this through build script.
-#define MyAppVerName "Synclosure-devel-svn"
+#define MyAppVerName "Synclosure svn-dev"
 
 #define MyAppPublisher "WhyAskWhy.org"
 #define MyAppSupportURL "http://projects.whyaskwhy.org/"
@@ -25,7 +25,7 @@
 #define VersionInfoVersion "1.0"
 
 ; Version of the product being installed
-#define VersionInfoProductTextVersion "svn-development"
+#define VersionInfoProductTextVersion "svn-dev"
 
 #define SetupIcon "synclosure.ico"
 #define ShortcutIcon "{app}\synclosure.ico"
@@ -53,7 +53,12 @@ AppUpdatesURL={#MyAppURL}
 ; Set to AppPublisher value by default
 ;VersionInfoCompany=
 VersionInfoCopyright=(c) {#MyAppCopyrightYear} {#MyAppCopyrightOwner}
-VersionInfoDescription={AppVerName}
+#ifdef MY_BUILD_VERSION
+    VersionInfoDescription={#MyAppName} {#MY_BUILD_VERSION} installer
+#else
+    VersionInfoDescription={#MyAppName} svn-dev installer
+#endif
+
 VersionInfoProductName={#MyAppName}
 
 #ifdef MY_BUILD_VERSION
@@ -137,3 +142,4 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 ; The 'package' dir will be created during the build phase.
 Source: "..\package\*"; DestDir: "{#InstallPath}"; Excludes: "\.svn"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
