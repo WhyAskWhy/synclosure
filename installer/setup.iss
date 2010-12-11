@@ -7,11 +7,13 @@
 #define MyAppVerName "Synclosure-devel-svn"
 
 #define MyAppPublisher "WhyAskWhy.org"
-#define MyAppURL "http://projects.whyaskwhy.org/"
 #define MyAppSupportURL "http://projects.whyaskwhy.org/"
 #define MyAppPublisherURL "http://www.whyaskwhy.org/"
 #define MyAppCopyrightOwner "TBD"
 #define MyAppCopyrightYear "TBD"
+
+#define MyAppURL "http://projects.whyaskwhy.org/"
+#define MyAppWikiURL "http://projects.whyaskwhy.org/projects/synclosure/wiki/"
 
 #define MyAppNameExe "synclosure.exe"
 
@@ -19,12 +21,14 @@
 
 #define InstallPath "{app}"
 
-; Version info of the installer itself?
+; Version info of the installer itself
 #define VersionInfoVersion "1.0"
-#define VersionInfoProductVersion "1.0"
 
-#define SetupIcon "whyaskwhy.org.ico"
-#define ShortcutIcon "{app}\whyaskwhy.org.ico"
+; Version of the product being installed
+#define VersionInfoProductTextVersion "svn-development"
+
+#define SetupIcon "synclosure.ico"
+#define ShortcutIcon "{app}\synclosure.ico"
 
 #define APPID_GUID  "{{0053D56D-782E-403A-BA77-FB8D01D0E925}"
 
@@ -51,7 +55,13 @@ AppUpdatesURL={#MyAppURL}
 VersionInfoCopyright=(c) {#MyAppCopyrightYear} {#MyAppCopyrightOwner}
 VersionInfoDescription={AppVerName}
 VersionInfoProductName={#MyAppName}
-VersionInfoProductVersion={#VersionInfoProductVersion}
+
+#ifdef MY_BUILD_VERSION
+    VersionInfoProductTextVersion={#MY_BUILD_VERSION}
+#else   
+    VersionInfoProductTextVersion={#VersionInfoProductTextVersion}
+#endif
+
 VersionInfoVersion={#VersionInfoVersion}
 VersionInfoTextVersion={#VersionInfoVersion}
 DefaultDirName={pf}\{#MyAppPublisher}\{#MyAppName}
@@ -110,6 +120,7 @@ Name: "{group}\{#MyAppName}"; Filename: "{#InstallPath}\{#MyAppNameExe}"; IconFi
 
 Name: "{group}\Documents\Readme (txt)"; Filename: "{#InstallPath}\docs\readme.txt";
 Name: "{group}\Documents\Web\Homepage"; Filename: "{#MyAppURL}";
+Name: "{group}\Documents\Web\Documentation"; Filename: "{#MyAppWikiURL}";
 
 Name: "{commondesktop}\{#MyAppName}";Filename: "{#InstallPath}\{#MyAppNameExe}";IconFilename: "{#ShortcutIcon}";WorkingDir: "{#InstallPath}";Tasks: desktopicon;
 
@@ -124,5 +135,5 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 ; The 'package' dir will be created during the build phase.
-Source: "package\*"; DestDir: "{#InstallPath}"; Excludes: "\.svn"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\package\*"; DestDir: "{#InstallPath}"; Excludes: "\.svn"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
