@@ -40,7 +40,7 @@ AppId={#APPID_GUID}
 AppName={#MyAppName}
 
 #ifdef MY_BUILD_VERSION
-    AppVerName={#MY_BUILD_VERSION}
+    AppVerName={#MyAppName} {#MY_BUILD_VERSION}
 #else   
     AppVerName={#MyAppVerName}
 #endif
@@ -110,7 +110,11 @@ InfoBeforeFile=infobefore.rtf
 
 
 [Messages]
-BeveledLabel={#MyAppVerName} - {#MyAppSupportURL}
+#ifdef MY_BUILD_VERSION
+    BeveledLabel={#MyAppName} {#MY_BUILD_VERSION} - {#MyAppSupportURL}
+#else   
+    BeveledLabel={AppVerName} - {#MyAppSupportURL}
+#endif
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
