@@ -117,10 +117,15 @@ def main():
         result = []
         if os.access(filename, os.W_OK) and os.path.isfile(filename):
             f = open(filename)
-            for line in f.xreadlines():
-                #If line is commented out or contains nothing but whitespace then do not add it to feedlist
-                if line[0] == '#' or line.isspace(): continue
-                result.append(line[:-1])
+            for line in f:
+                stripped_line = line.strip()
+
+                # If line is commented out or is empty length ...
+                if (len(stripped_line) <= 0) or (stripped_line[0] == '#'): 
+                    # ... do not add it to feedlist
+                    continue
+                else:
+                    result.append(stripped_line)
             f.close()
         else:
             return False
