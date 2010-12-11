@@ -399,7 +399,7 @@ def main():
             # FIXME: Isn't this already being handled by ParseFile?
             if len(feed) != 0: 
                 # Show a countdown of the remaining feeds to be parsed (after this one) using 5 digit padding
-                print '[%.5d left]' % (feedcount -1), 'parsing: ' + parsed['feed']['title']
+                print '\n[%.5d left]' % (feedcount -1), 'parsing: ' + parsed['feed']['title']
                 feedcount -= 1
 
         except KeyboardInterrupt:
