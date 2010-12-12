@@ -31,6 +31,7 @@ def main():
     wix_project_file='setup.wix'
     installed_python_version='2.7'
     infobefore_file="infobefore.rtf"
+    cx_freeze_setup = 'setup_freeze.py'
     
     # If not hardcoded, the build_dir is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
@@ -78,19 +79,19 @@ def main():
                 + installed_python_version, package_dir)
             os.rmdir(checkout_path + os.sep + 'build')
 
-    def UpdateIncludeFile(include_file, release_version):
+    def UpdateVersionTagInFile(file, release_version):
         """Update the version information within an include file"""
 
         # Open tmp file, read in orig and make changes in tmp file.
         o = open("updated_include_file.tmp","a")
-        for line in open(include_file):
+        for line in open(file):
             line = line.replace("VERSION_PLACEHOLDER",release_version)
             o.write(line) 
         o.close()
 
         # Replace original with updated copy
-        os.remove(include_file)
-        os.rename("updated_include_file.tmp", include_file)
+        os.remove(file)
+        os.rename("updated_include_file.tmp", file)
 
     def BuildInnoSetupInstaller(release_version):
         """Produce an Inno Setup installer"""
@@ -142,9 +143,16 @@ def main():
             print '[INFO] Skipping checkout and attempting to build %s %s' \
                 % (application_name, release_version)
 
+        # Shown during installation.
         infobefore_file = checkout_path + os.sep + 'installer' \
             + os.sep + infobefore_file
-        UpdateIncludeFile(infobefore_file, release_version)
+
+        # Not sure when it's shown, but the cx_freeze_setup is used
+        # to build the "compiled" exe version of Synclosure.
+        cx_freeze_setup = checkout_path + os.sep + cx_freeze_setup
+
+        UpdateVersionTagInFile(infobefore_file, release_version)
+        UpdateVersionTagInFile(cx_freeze_setup, release_version)
         CompilePythonCode()
         BuildInnoSetupInstaller(release_version)
         BuildWiXProject(release_version)
@@ -166,10 +174,15 @@ def main():
         if debugon: 
             print "[DEBUG] release_version is %s" % release_version
 
+        # Shown during installation.
         infobefore_file = checkout_path + os.sep + 'installer' \
             + os.sep + infobefore_file
 
-        UpdateIncludeFile(infobefore_file, release_version)
+        # Not sure when it's shown, but the cx_freeze_setup is used
+        # to build the "compiled" exe version of Synclosure.
+        cx_freeze_setup = checkout_path + os.sep + cx_freeze_setup
+
+        UpdateVersionTagInFile(infobefore_file, release_version)
         CompilePythonCode()
         BuildInnoSetupInstaller(release_version)
         BuildWiXProject(release_version)
