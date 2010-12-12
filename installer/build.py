@@ -100,18 +100,18 @@ def main():
             shutil.copyfile(checkout_path + os.sep + 'installer' + os.sep \
                 + icon_file, package_dir + os.sep + icon_file)
 
-    def UpdateDistFiles():
+    def UpdateDistFiles(dist_file, production_file):
         """Renames example files so they can be used"""
         
         # Reset variables to full path to files
-        sources_production = checkout_path + os.sep + sources_production
-        sources_dist = checkout_path + os.sep + sources_dist
+        production_file = checkout_path + os.sep + production_file
+        dist_file = checkout_path + os.sep + dist_file
 
         # Skip renaming/moving anything if content has already been moved.
-        if not os.path.exists(checkout_path + os.sep + sources_production):
+        if not os.path.exists(production_file):
 
             # Move sources.ini.dist to sources.ini
-            os.rename(sources_dist, sources_production)
+            os.rename(dist_file, production_file)
 
 
     def UpdateVersionTagInFile(file, release_version):
@@ -190,7 +190,7 @@ def main():
         UpdateVersionTagInFile(cx_freeze_setup, release_version)
         CompilePythonCode()
         UpdatePackageDir()
-        UpdateDistFiles()
+        UpdateDistFiles(sources_dist, sources_production)
         BuildInnoSetupInstaller(release_version)
         BuildWiXProject(release_version)
 
@@ -222,7 +222,7 @@ def main():
         UpdateVersionTagInFile(infobefore_file, release_version)
         CompilePythonCode()
         UpdatePackageDir()
-        UpdateDistFiles()
+        UpdateDistFiles(sources_dist, sources_production)
         BuildInnoSetupInstaller(release_version)
         BuildWiXProject(release_version)
 
