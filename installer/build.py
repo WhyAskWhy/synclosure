@@ -34,6 +34,8 @@ def main():
     infobefore_file="infobefore.rtf"
     cx_freeze_setup = 'setup_freeze.py'
     icon_file = 'synclosure.ico'
+    sources_dist = 'sources.dist.ini'
+    sources_production = 'sources.ini'
     
     # If not hardcoded, the build_dir is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
@@ -97,6 +99,19 @@ def main():
             # Get a copy of the icon
             shutil.copyfile(checkout_path + os.sep + 'installer' + os.sep \
                 + icon_file, package_dir + os.sep + icon_file)
+
+    def UpdateDistFiles():
+        """Renames example files so they can be used"""
+        
+        # Reset variables to full path to files
+        sources_production = checkout_path + os.sep + sources_production
+        sources_dist = checkout_path + os.sep + sources_dist
+
+        # Skip renaming/moving anything if content has already been moved.
+        if not os.path.exists(checkout_path + os.sep + sources_production):
+
+            # Move sources.ini.dist to sources.ini
+            os.rename(sources_dist, sources_production)
 
 
     def UpdateVersionTagInFile(file, release_version):
