@@ -125,13 +125,13 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 ;On Windows NT platforms, this folder is created under the All Users profile unless the user installing
 ;the application does not have administrative privileges, in which case it is created in the user's profile.
 
-Name: "{group}\{#MyAppName}"; Filename: "{#InstallPath}\{#MyAppNameExe}"; IconFilename: "{#ShortcutIcon}"; WorkingDir: "{#InstallPath}";
+Name: "{group}\{#MyAppName}"; Filename: "{#InstallPath}"; IconFilename: "{#ShortcutIcon}"; WorkingDir: "{#InstallPath}";
 
 Name: "{group}\Documents\Readme (txt)"; Filename: "{#InstallPath}\docs\readme.txt";
 Name: "{group}\Documents\Web\Homepage"; Filename: "{#MyAppURL}";
 Name: "{group}\Documents\Web\Documentation"; Filename: "{#MyAppWikiURL}";
 
-Name: "{commondesktop}\{#MyAppName}";Filename: "{#InstallPath}\{#MyAppNameExe}";IconFilename: "{#ShortcutIcon}";WorkingDir: "{#InstallPath}";Tasks: desktopicon;
+Name: "{commondesktop}\{#MyAppName}";Filename: "{#InstallPath}";IconFilename: "{#ShortcutIcon}";WorkingDir: "{#InstallPath}";Tasks: desktopicon;
 
 
 ;[Dirs]
