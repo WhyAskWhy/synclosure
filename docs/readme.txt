@@ -5,7 +5,7 @@ Synclosure VERSION_PLACEHOLDER
 Deoren Moor
 http://projects.whyaskwhy.org/
 
-Description, Usage, Install, Requirements, Bugs, Copyright, License.
+Description, Usage, Requirements, Install, Contact us, Bugs, Copyright, License.
 
 
 ==================
@@ -22,36 +22,23 @@ USAGE
     will create a default file. Comments begin with a '#' character and 
     blank lines are allowed.
  
-  - Think about include keywords. Only want mp3 files? 
+  - Include on certain types of files. For example, only want mp3 files? 
     Include them: <synclosure -imp3>
 
-  - Think about exclude keywords. Don't want mov files? 
+  - Exclude certain types of files. For example, don't want mov files? 
     Exclude them: <synclosure -emov>
 
-  - Think about custom actions. You want torrent files to be automatically 
+  - Use custom actions. You want torrent files to be automatically 
     handled over to your BitTorrent Client?
     <synclosure -a torrent "c:\program files\abc\abc.exe">
 
   - Where would you like your destination folder?
+    synclosure -d COOKIES_PODCAST
 
-  - Adapt the link to synclosure.exe. Include it in your cronjob/scheduler or
-    manually start it when your computer is idle.
+  - Create a link to synclosure.exe (or synclosure.py if using source). 
+    Include it in your cronjob/scheduler or manually start it when your
+    computer is idle.
 
-
-==================
-INSTALLATION
-==================
-
-Run setup_synclosure.exe and follow the directions. You do not require 
-administrator privileges to install or run Synclosure, but you have to
-install to an unprotected location if installing as a non-administrator.
-
-Alternatively you can checkout the latest code for Synclosure and run that.
-
-See http://projects.whyaskwhy.org/projects/synclosure/wiki for more details.
-
-
-Please let us know if you successfully use Synclosure on Windows 98/ME)
 
 ==================
 REQUIREMENTS 
@@ -71,25 +58,74 @@ source installation:
  - Universal Feed Parser
      http://www.feedparser.org/
 
+   Note: This is included with source and binary installations, but it has
+         it's own license. See 'License' at the bottom of this file.
 
+
+==================
+INSTALLATION
+==================
+
+binary installation:
+
+Run setup_synclosure.exe and follow the directions. You do not require 
+administrator privileges to install or run Synclosure, but you have to
+install to an unprotected location if installing as a non-administrator.
+
+source installation:
+
+Download latest source archive or checkout from version conntrol. Everything
+you  need to run it should be included.
+
+See http://projects.whyaskwhy.org/projects/synclosure/wiki/Installation for 
+more details.
+
+
+Please let us know if you successfully use Synclosure on Windows 98/ME)
+
+
+==================
+CONTACT US
+==================
+
+We look forward to hearing from you!
+
+ Project homepage: http://projects.whyaskwhy.org/
+          Twitter: http://twitter.com/synclosure
+           Forums: http://projects.whyaskwhy.org/projects/synclosure/boards
 
 
 ==================
 BUGS
 ==================
 
-Please submit a bug if you find an issue with Synclosure. The project page
-is located here: 
-    http://projects.whyaskwhy.org/projects/synclosure/issues
+Before submitting a bug, please:
 
+#1) Make sure you are running the latest version of Synclosure.
+    See the upgrade notes for details:
+    http://projects.whyaskwhy.org/projects/synclosure/wiki/Upgrade
+
+    * Make sure to backup sources.ini and cache.ini before upgrading to
+      a new version.
+
+#2) Check the forums to see if someone else has already reported the problem.
+    http://projects.whyaskwhy.org/projects/synclosure/boards
+
+#3) Search for an existing issue that matches your problem.
+    http://projects.whyaskwhy.org/search/index/synclosure?issues=1
+
+#4) If none of the above are true, please submit a bug and include as much
+    relevant information as you can to help with fixing it.
+
+Thanks!
 
 
 ==================
-COPYRIGHT
+COPYRIGHT (Synclosure)
 ==================
 
 Original code and name (c) by raphael balimann, 2004
-Copyright (C) 2007 deoren of WhyAskWhy.org
+Copyright (C) 2007 deoren of WhyAskWhy.org ( > 0.1)
 
 
 ==================
