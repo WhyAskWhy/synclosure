@@ -23,8 +23,10 @@ infoon = True
 def main():
     application_name = 'Synclosure'
 
-    # svn-dev for dev builds, '0.2' for release build
-    application_release_version = 'dev-svn'
+    app_dev_release_prefix = 'dev-svn'
+
+    # value of app_dev_release_prefix for dev builds, '0.2' for release build
+    application_release_version = app_dev_release_prefix # '0.2'
     app_release_ver_placeholder = 'VERSION_PLACEHOLDER'
 
     # Use a tag if doing a release build
@@ -167,8 +169,8 @@ def main():
     revision = GetRevision()
 
     # If this is a development build, append the revision number
-    if application_release_version == 'svn-dev':
-        release_version = application_release_version + '-r' + revision
+    if application_release_version == app_dev_release_prefix:
+        release_version = app_dev_release_prefix + '-r' + revision
     else:
         release_version = application_release_version
 
