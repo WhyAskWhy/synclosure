@@ -184,10 +184,8 @@ def main():
 
     if os.path.exists(checkout_path):
         if infoon:
-            print '[INFO] Already exists: %s' % \
-                build_dir + os.sep + application_name
-            print '[INFO] Skipping checkout and attempting to build %s %s' \
-                % (application_name, release_version)
+            print '[INFO] Already exists: %s' % checkout_path
+            print '[INFO] Skipping checkout'
     else:
         # Change CWD to build_dir
         os.chdir(build_dir)
@@ -207,6 +205,9 @@ def main():
     if debugon: 
         print "[DEBUG] release_version is %s" % release_version
 
+    if infoon:
+        print '[INFO] Attempting to build %s %s' \
+            % (application_name, release_version)
 
     UpdateVersionTagInFiles(files_with_placeholder_content, release_version)
 
