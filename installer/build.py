@@ -9,6 +9,7 @@ import os
 import os.path
 import sys
 import datetime
+import shutil
 
 import pysvn
 
@@ -32,6 +33,7 @@ def main():
     installed_python_version='2.7'
     infobefore_file="infobefore.rtf"
     cx_freeze_setup = 'setup_freeze.py'
+    icon_file = 'synclosure.ico'
     
     # If not hardcoded, the build_dir is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
@@ -40,6 +42,8 @@ def main():
     
     checkout_path = build_dir + os.sep + application_name
     
+    # The contents included within the installer
+    package_dir = checkout_path + os.sep + 'package'
     date = datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
 
     def CheckoutSVN(url, checkout_path):
@@ -59,9 +63,6 @@ def main():
         """Produce a Windows executable that doesn't rely on a pre-existing
            installation of Python"""
 
-        # The contents included within the installer
-        package_dir = checkout_path + os.sep + 'package'        
-
         if os.path.exists(package_dir):
             if infoon: 
                 print '[INFO] Compiled Python code exists, skipping compilation'
@@ -75,9 +76,26 @@ def main():
             if debugon:
                 print "The result of the Python code compile is: %s" % result
 
-            os.rename(checkout_path + os.sep + 'build\exe.win32-' \
-                + installed_python_version, package_dir)
-            os.rmdir(checkout_path + os.sep + 'build')
+
+    def UpdatePackageDir():
+        """Moves content to be installed into package dir"""
+
+        # Move compiled files to 'package' dir.
+        os.rename(checkout_path + os.sep + 'build\exe.win32-' \
+            + installed_python_version, package_dir)
+        os.rmdir(checkout_path + os.sep + 'build')
+
+        # Move docs & licenses to 'package' dir.
+        os.rename(checkout_path + os.sep + 'docs', package_dir \
+            + os.sep + 'docs')
+        os.rename(checkout_path + os.sep + 'licenses', package_dir \
+            + os.sep + 'licenses')
+
+        # Get a copy of the icon
+        shutil.copyfile(checkout_path + os.sep + 'installer' + os.sep \
+            + icon_file, package_dir + os.sep + icon_file)
+
+
 
     def UpdateVersionTagInFile(file, release_version):
         """Update the version information within an include file"""
@@ -154,6 +172,7 @@ def main():
         UpdateVersionTagInFile(infobefore_file, release_version)
         UpdateVersionTagInFile(cx_freeze_setup, release_version)
         CompilePythonCode()
+        UpdatePackageDir()
         BuildInnoSetupInstaller(release_version)
         BuildWiXProject(release_version)
 
@@ -184,6 +203,7 @@ def main():
 
         UpdateVersionTagInFile(infobefore_file, release_version)
         CompilePythonCode()
+        UpdatePackageDir()
         BuildInnoSetupInstaller(release_version)
         BuildWiXProject(release_version)
 
