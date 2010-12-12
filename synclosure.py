@@ -56,6 +56,10 @@ def main():
 
     #OptParse is a pain, so as of now i'm sticking to that custom format
     configfile, cache = 'sources.ini', 'cache.ini'
+    
+    # Should content be placed within a subfolder? (True/False)
+    # Each subfolder's name is created from the title of the feed being parsed.
+    usesubfolders = True
 
     #FIXME: Make this easier - perhaps a config file with each item per line?  Friendly keywords perhaps?
     # Characters or words to strip from Podcast Feed titles for directory creation.
@@ -389,6 +393,24 @@ def main():
     if not oldenclosures: #cache empty, create new file
         WriteFile(cache, '')
         oldenclosures = ParseFile(cache)
+        
+    # Download folder is specified on the command line.
+    if destination and not os.path.isfile(destination):
+        downloadfolder = destination
+
+        if not os.path.isdir(downloadfolder):
+            try:
+                    os.mkdir(downloadfolder)
+            except:
+                    sys.exit(nl+'[error] cannot create download folder (' + downloadfolder + ') ' \
+                    'check permissions')
+
+        os.chdir(downloadfolder)
+
+    # Destination was not set on commandline
+    else:
+        # Use the CWD as the path for downloads.
+        downloadfolder = os.getcwd
 
     feedcount = len(feedlist)
     print "Beginnging feed processing ..."
@@ -431,22 +453,22 @@ def main():
                         try:
                             print 'downloading: ' + enclosure.split("/")[-1]
 
-                            #define download folder, etc
-                            if destination and os.path.isdir(destination) and not os.path.isfile(destination):
-                                downloadfolder = destination
-                            else:                            
+                            if usesubfolders:
                                 # Apply the regular expression against the title of the RSS Podcast feed and 
-                                # use the result as the folder to download the list of enclosures to             
-                                downloadfolder = SanitizeName(parsed.feed.title, destfolderfilter, type="folder")
+                                # use the result as the folder to download the list of enclosures to
+                                subfolder = SanitizeName(parsed.feed.title, destfolderfilter, type="folder")
 
-                            if not os.path.isdir(downloadfolder):
-                                try:
-                                        os.mkdir(downloadfolder)
-                                except:
-                                        sys.exit(nl+'[error] cannot create download folder (' + downloadfolder + ') ' \
-                                        'check permissions')
+                                if not os.path.isdir(subfolder):
+                                    try:
+                                            os.mkdir(subfolder)
+                                    except:
+                                            sys.exit(nl+'[error] cannot create subfolder (' + subfolder + ') ' \
+                                            'check permissions')
 
-                            DownloadFile(enclosure, downloadfolder, retrylimit, waittime)
+                                DownloadFile(enclosure, subfolder, retrylimit, waittime)
+
+                            else:
+                                DownloadFile(enclosure, downloadfolder, retrylimit, waittime)
 
                             if action_list:
                                 for action in action_list:
