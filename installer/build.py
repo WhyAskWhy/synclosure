@@ -222,6 +222,7 @@ def main():
         cx_freeze_setup = checkout_path + os.sep + cx_freeze_setup
 
         UpdateVersionTagInFile(infobefore_file, release_version)
+        UpdateVersionTagInFile(cx_freeze_setup, release_version)
         CompilePythonCode()
         UpdatePackageDir()
         UpdateDistFiles(sources_dist, sources_production)
