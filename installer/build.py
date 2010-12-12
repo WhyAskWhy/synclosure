@@ -24,7 +24,8 @@ def main():
     application_name = 'Synclosure'
 
     # svn-dev for dev builds, '0.2' for release build
-    application_release_version = 'svn-dev'
+    application_release_version = 'dev-svn'
+    app_release_ver_placeholder = 'VERSION_PLACEHOLDER'
 
     # Use a tag if doing a release build
     synclosure_repo_url='http://projects.whyaskwhy.org/svn/synclosure/trunk/'
@@ -36,14 +37,15 @@ def main():
     icon_file = 'synclosure.ico'
     sources_dist = 'sources.dist.ini'
     sources_production = 'sources.ini'
-    
+    synclosure = 'synclosure.py'
+
     # If not hardcoded, the build_dir is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
     build_dir = sys.path[0]
     output_dir = sys.path[0]
-    
+
     checkout_path = build_dir + os.sep + application_name
-    
+
     # The contents included within the installer
     package_dir = checkout_path + os.sep + 'package'
     date = datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
@@ -71,7 +73,7 @@ def main():
 
         else:
             if infoon: print '[INFO] Compiling Python code'
-            
+
             compile_command = 'python ' + checkout_path + os.sep \
                 + 'setup_freeze.py build'
             result = os.system(compile_command)
@@ -102,7 +104,7 @@ def main():
 
     def UpdateDistFiles(dist_file, production_file):
         """Renames example files so they can be used"""
-        
+
         # Reset variables to full path to files
         production_file = checkout_path + os.sep + production_file
         dist_file = checkout_path + os.sep + dist_file
@@ -120,7 +122,7 @@ def main():
         # Open tmp file, read in orig and make changes in tmp file.
         o = open("updated_include_file.tmp","a")
         for line in open(file):
-            line = line.replace("VERSION_PLACEHOLDER",release_version)
+            line = line.replace(app_release_ver_placeholder, release_version)
             o.write(line) 
         o.close()
 
