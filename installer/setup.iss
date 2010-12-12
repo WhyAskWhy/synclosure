@@ -3,9 +3,12 @@
 
 #define MyAppName "Synclosure"
 
-; FIXME: Generate this through build script.
-#define MyAppVerName "Synclosure svn-dev"
+; NOTE:
+; ===================================================
+; VERSION_PLACEHOLDER is replaced by the build script.
+; ===================================================
 
+#define MyAppVerName "Synclosure VERSION_PLACEHOLDER"
 #define MyAppPublisher "WhyAskWhy.org"
 #define MyAppSupportURL "http://projects.whyaskwhy.org/"
 #define MyAppPublisherURL "http://www.whyaskwhy.org/"
@@ -25,7 +28,7 @@
 #define VersionInfoVersion "1.0"
 
 ; Version of the product being installed
-#define VersionInfoProductTextVersion "svn-dev"
+#define VersionInfoProductTextVersion "VERSION_PLACEHOLDER"
 
 #define SetupIcon "synclosure.ico"
 #define ShortcutIcon "{app}\synclosure.ico"
@@ -38,13 +41,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={#APPID_GUID}
 AppName={#MyAppName}
-
-#ifdef MY_BUILD_VERSION
-    AppVerName={#MyAppName} {#MY_BUILD_VERSION}
-#else   
-    AppVerName={#MyAppVerName}
-#endif
-
+AppVerName={#MyAppVerName}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppPublisherURL}
 AppSupportURL={#MyAppSupportURL}
@@ -53,20 +50,9 @@ AppUpdatesURL={#MyAppURL}
 ; Set to AppPublisher value by default
 ;VersionInfoCompany=
 VersionInfoCopyright=(c) {#MyAppCopyrightYear} {#MyAppCopyrightOwner}
-#ifdef MY_BUILD_VERSION
-    VersionInfoDescription={#MyAppName} {#MY_BUILD_VERSION} installer
-#else
-    VersionInfoDescription={#MyAppName} svn-dev installer
-#endif
-
+VersionInfoDescription={#MyAppVerName} installer
 VersionInfoProductName={#MyAppName}
-
-#ifdef MY_BUILD_VERSION
-    VersionInfoProductTextVersion={#MY_BUILD_VERSION}
-#else   
-    VersionInfoProductTextVersion={#VersionInfoProductTextVersion}
-#endif
-
+VersionInfoProductTextVersion=VERSION_PLACEHOLDER
 VersionInfoVersion={#VersionInfoVersion}
 VersionInfoTextVersion={#VersionInfoVersion}
 DefaultDirName={pf}\{#MyAppPublisher}\{#MyAppName}
@@ -77,13 +63,7 @@ OutputBaseFilename={#InstallerName}
 UninstallDisplayIcon={#ShortcutIcon}
 SetupIconFile={#SetupIcon}
 
-; Compiling via commandline and passing option will disable compression,
-; otherwise if the option is not defined, use max compression.
-#ifdef TESTING
-    Compression=none    
-#else   
-    Compression=lzma/ultra64
-#endif
+Compression=lzma/ultra64
 
 CompressionThreads=2
 SolidCompression=no
@@ -111,11 +91,7 @@ LicenseFile=..\package\licenses\synclosure\LICENSE.txt
 
 
 [Messages]
-#ifdef MY_BUILD_VERSION
-    BeveledLabel={#MyAppName} {#MY_BUILD_VERSION} - {#MyAppSupportURL}
-#else   
-    BeveledLabel={AppVerName} - {#MyAppSupportURL}
-#endif
+BeveledLabel={#MyAppVerName} - {#MyAppSupportURL}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
