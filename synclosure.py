@@ -27,9 +27,15 @@ import socket
 # Homepage: http://www.feedparser.org/
 import feedparser
 
+# Build script should set this.
+VERSION_TAG = 'VERSION_PLACEHOLDER'
 
-# Strip out everything except for numbers from the svn Revision property
-__version__ = "dev-r" + re.sub(r'[^0-9]', '', "$Revision$") + "-svn"
+# But if not, then get the revision of this file to use as version.
+if VERSION_TAG == 'VERSION_' + 'PLACEHOLDER':
+    # Strip out everything except for numbers from the svn Revision property
+    __version__ = "dev-r" + re.sub(r'[^0-9]', '', "$Revision$") + "-svn"
+else:
+    __version__ = VERSION_TAG
 
 __author__ = "Raphael Balimann (spam@raphb.ch)"
 __copyright__ = """Copyright (c) 2004 Raphael Balimann
