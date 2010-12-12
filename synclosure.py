@@ -55,7 +55,8 @@ def main():
     feedlist, enclosures, oldenclosures, nl = [], [], [], '\n'
 
     #OptParse is a pain, so as of now i'm sticking to that custom format
-    configfile, cache = 'sources.ini', 'cache.ini'
+    configfile = sys.path[0] + os.sep + 'sources.ini'
+    cache = sys.path[0] + os.sep + 'cache.ini'
     
     # Should content be placed within a subfolder? (True/False)
     # Each subfolder's name is created from the title of the feed being parsed.
