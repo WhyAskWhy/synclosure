@@ -158,78 +158,45 @@ def main():
     # Change CWD to build_dir
     os.chdir(build_dir)
 
-    if os.path.exists(checkout_path):
-
-        # Change CWD to working copy
-        os.chdir(checkout_path)
-
-        revision = GetRevision()
-
-        # If this is a development build, append the revision number
-        if application_release_version == 'svn-dev':
-            release_version = application_release_version + '-r' + revision
-        else:
-            release_version = application_release_version
-
-        if debugon: 
-            print "[DEBUG] release_version is %s" % release_version
-
-        if infoon:
-            print '[INFO] Already exists: %s' % \
-                build_dir + os.sep + application_name
-            print '[INFO] Skipping checkout and attempting to build %s %s' \
-                % (application_name, release_version)
-
-        # Shown during installation.
-        infobefore_file = checkout_path + os.sep + 'installer' \
-            + os.sep + infobefore_file
-
-        # Not sure when it's shown, but the cx_freeze_setup is used
-        # to build the "compiled" exe version of Synclosure.
-        cx_freeze_setup = checkout_path + os.sep + cx_freeze_setup
-
-        UpdateVersionTagInFile(infobefore_file, release_version)
-        UpdateVersionTagInFile(cx_freeze_setup, release_version)
-        UpdateVersionTagInFile(synclosure, release_version)
-        CompilePythonCode()
-        UpdatePackageDir()
-        UpdateDistFiles(sources_dist, sources_production)
-        BuildInnoSetupInstaller(release_version)
-        BuildWiXProject(release_version)
-
-    else:
+    if not os.path.exists(checkout_path):
         CheckoutSVN(synclosure_repo_url, checkout_path)
 
-        # Change CWD to working copy
-        os.chdir(checkout_path)
+    # Change CWD to working copy
+    os.chdir(checkout_path)
 
-        revision = GetRevision()
+    revision = GetRevision()
 
-        # If this is a development build, append the revision number
-        if application_release_version == 'svn-dev':
-            release_version = application_release_version + '-r' + revision
-        else:
-            release_version = application_release_version
+    # If this is a development build, append the revision number
+    if application_release_version == 'svn-dev':
+        release_version = application_release_version + '-r' + revision
+    else:
+        release_version = application_release_version
 
-        if debugon: 
-            print "[DEBUG] release_version is %s" % release_version
+    if debugon: 
+        print "[DEBUG] release_version is %s" % release_version
 
-        # Shown during installation.
-        infobefore_file = checkout_path + os.sep + 'installer' \
-            + os.sep + infobefore_file
+    if infoon:
+        print '[INFO] Already exists: %s' % \
+            build_dir + os.sep + application_name
+        print '[INFO] Skipping checkout and attempting to build %s %s' \
+            % (application_name, release_version)
 
-        # Not sure when it's shown, but the cx_freeze_setup is used
-        # to build the "compiled" exe version of Synclosure.
-        cx_freeze_setup = checkout_path + os.sep + cx_freeze_setup
+    # Shown during installation.
+    infobefore_file = checkout_path + os.sep + 'installer' \
+        + os.sep + infobefore_file
 
-        UpdateVersionTagInFile(infobefore_file, release_version)
-        UpdateVersionTagInFile(cx_freeze_setup, release_version)
-        UpdateVersionTagInFile(synclosure, release_version)
-        CompilePythonCode()
-        UpdatePackageDir()
-        UpdateDistFiles(sources_dist, sources_production)
-        BuildInnoSetupInstaller(release_version)
-        BuildWiXProject(release_version)
+    # Not sure when it's shown, but the cx_freeze_setup is used
+    # to build the "compiled" exe version of Synclosure.
+    cx_freeze_setup = checkout_path + os.sep + cx_freeze_setup
+
+    UpdateVersionTagInFile(infobefore_file, release_version)
+    UpdateVersionTagInFile(cx_freeze_setup, release_version)
+    UpdateVersionTagInFile(synclosure, release_version)
+    CompilePythonCode()
+    UpdatePackageDir()
+    UpdateDistFiles(sources_dist, sources_production)
+    BuildInnoSetupInstaller(release_version)
+    BuildWiXProject(release_version)
 
 
 if __name__ == "__main__":
