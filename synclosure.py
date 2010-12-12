@@ -140,7 +140,7 @@ def main():
 
     def DownloadFile(url, downloadfolder, retrylimit, waittime):
         """Wrapper for urlopen to make use of retrylimit, waittime values"""
-        
+
         # Filter out invalid content from author's XML feed
         if debugmodeon: print "original url is %s" % url
         url = SanitizeName(url, urlfilter, 'url')
@@ -160,7 +160,7 @@ def main():
                     WriteFile(cache, url+'\n')
                 print '*' * 60, "\n\n"
                 oldenclosures.append(url)
-                
+
             elif e.code == 403:
                 print '*' * 60
                 print '[WARNING] ACCESS DENIED:', url            
@@ -172,7 +172,7 @@ def main():
             else:
                 print "geturl HTTPError %s on url %s" % (e.code, url)
                 pass # FIXME: Is this being handled?  - May not be worth worrying about?
-        
+
         # FIXME: This will need better handling
         except urllib2.URLError, e:
             print "geturl URLError %s on url %s" % (e.reason, url)
@@ -199,15 +199,15 @@ def main():
             finalurl = remotefile_fh.geturl()
             if finalurl is not None:
                 remotefile = os.path.basename(finalurl)
-                
+
                 # FIXME:    Come up with a better variable name here, after all the 'enclosurefilename' variable
                 #                   really should be something that reflects that it's a local file.  localenclosurefilename?
                 enclosurefilename = os.path.join(downloadfolder, remotefile)
-            
+
             if debugmodeon:
                 print "Original enclosure url:", url
                 print "Enc url after redirect:", finalurl        
-            
+
             localfilename = SanitizeName(enclosurefilename, 
                 filenamefilter, type='file')
 
@@ -223,11 +223,11 @@ def main():
                     print '\n', '*' * 60
                     print '[NOTICE ]  INVALID LINK ENCOUNTERED'
                     print '*' * 60
-                    
+
                     if ignoreinvalidlinks:                                    
                         print '\tAdding: ', url, \
                             '\n\tto cache to prevent future download attempts'
-                        
+
                         # Here we're using the the global 'enclosure' value instead of the sanitized 'url'
                         # value.  This is because the check for previously downloaded enclosures in the
                         # main body uses the entry in the cache file directly against the author's enclosure
@@ -254,7 +254,7 @@ def main():
                 # if the file is currently being downloaded, a Ctrl-C will be caught here
                 except (KeyboardInterrupt, SystemExit):
                     if debugmodeon: print "here i am after remotefile_fh.read()"
-                    
+
                     # If user wishes to remove failed downloaded file, do so
                     if removepartialfile:
                         if debugmodeon: print "removepartialfile setting is on"
@@ -277,14 +277,14 @@ def main():
                     else:
                         # Give up on this file (for this session) and proceed to the next one
                         print "\t\tRetry limit exhausted, moving on to next file"
-                
+
                 else:
                     # File was successfully downloaded
                     localfile_fh.flush()
-                                       
+
                     # Log the downloaded file (enclosure) to the cache list (cache.ini)
                     WriteFile(cache, enclosure+'\n')
-                
+
                 finally:                
                     localfile_fh.close()
 
@@ -300,24 +300,24 @@ def main():
             cleanname = re.sub(filter, "", name)
             if debugmodeon: print "cleanname is %s" % cleanname
             return cleanname
-            
+
         elif str(type).lower() == "file":
             # Strip away question mark and all characters follow it.
             file = name.split('?').pop(0)
             cleanname = re.sub(filter, "", file)
             if debugmodeon: print "cleanname is %s" % cleanname
             return cleanname
-            
+
         elif str(type).lower() == "url":
             cleanname = re.sub(filter, "", name)
             if debugmodeon: print "cleanname is %s" % cleanname
             return cleanname
-        
+
         else:
             functionname = sys._getframe().f_code.co_name 
             message = "INVALID USE OF %s" % functionname
             sys.exit(message)
-                
+
 
     def RemoveFile(localfile_fh, file):
         """Receives file handle to saved copy of enclosure and full path to file"""
@@ -325,7 +325,7 @@ def main():
         # FIXME: Should this function do this, or should it be the calling block's responsibility?
         # Close file handle if it's still open
         localfile_fh.close()
-        
+
         # remove file (if exists)
         if debugmodeon:print file
         if os.path.isfile(file):
@@ -333,8 +333,8 @@ def main():
             print "[NOTICE  ]\t* Removing partial file"
             os.unlink(file)
             if debugmodeon:print "just removed file"
-            
-                    
+
+
     ShowProductInfo()
 
     optParser = OptionParser()
@@ -385,7 +385,7 @@ def main():
             WriteFile(configfile, feed.strip() + '\n')
 
         feedlist = ParseFile(configfile)
-        
+
     if not oldenclosures: #cache empty, create new file
         WriteFile(cache, '')
         oldenclosures = ParseFile(cache)
@@ -411,10 +411,10 @@ def main():
 
         except KeyboardInterrupt:
             sys.exit(nl+'[error] parsing interrupted')
-            
+
         except bozo_exception: #ignoring the feedparser 'parsing illformed xml' exception
             continue
-        
+
         for entry in parsed['entries']:
             if entry.has_key('enclosures'):
                 for _enclosure in entry['enclosures']:
@@ -445,9 +445,9 @@ def main():
                                 except:
                                         sys.exit(nl+'[error] cannot create download folder (' + downloadfolder + ') ' \
                                         'check permissions')
-                            
+
                             DownloadFile(enclosure, downloadfolder, retrylimit, waittime)
-                            
+
                             if action_list:
                                 for action in action_list:
                                     keyword, program = action
