@@ -31,15 +31,10 @@ def main():
 
     # Use a tag if doing a release build
     synclosure_repo_url='http://projects.whyaskwhy.org/svn/synclosure/trunk/'
-    inno_setup_project_file='setup.iss'
-    wix_project_file='setup.wix'
     installed_python_version='2.7'
-    infobefore_file="infobefore.rtf"
-    cx_freeze_setup = 'setup_freeze.py'
     icon_file = 'synclosure.ico'
     sources_dist = 'sources.dist.ini'
     sources_production = 'sources.ini'
-    synclosure = 'synclosure.py'
 
     # If not hardcoded, the build_dir is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
@@ -51,6 +46,37 @@ def main():
     # The contents included within the installer
     package_dir = checkout_path + os.sep + 'package'
     date = datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
+
+    # #####################
+    # Project Files
+    # #####################
+    # These need to stay as separate values from 
+    # files_with_placeholder_content var due to use in build functions?
+    cx_freeze_setup = checkout_path + os.sep + 'setup_freeze.py'
+
+    inno_setup_project_file = checkout_path + os.sep + 'installer' \
+        + os.sep + 'setup.iss'
+
+    wix_project_file = checkout_path + os.sep + 'installer' \
+        + os.sep + 'setup.wxs'
+
+    # ######################################## #
+    # Files to have placeholder values updated during build
+    # ######################################## #
+
+    files_with_placeholder_content = [
+
+        # Shown during installation.
+        checkout_path + os.sep + 'installer' + os.sep + 'infobefore.rtf',
+        checkout_path + os.sep + 'docs' + os.sep + 'readme.txt',
+        checkout_path + os.sep + 'synclosure.py',
+
+        # Not sure when it's shown, but the cx_freeze_setup is used
+        # to build the "compiled" exe version of Synclosure.
+         cx_freeze_setup,
+         inno_setup_project_file,
+         wix_project_file,
+    ]
 
     def CheckoutSVN(url, checkout_path):
         """Checks out SVN working copy"""
@@ -65,7 +91,7 @@ def main():
         client = pysvn.Client()
         return str(client.info(checkout_path).revision.number)
 
-    def CompilePythonCode():
+    def CompilePythonCode(python_setup_file):
         """Produce a Windows executable that doesn't rely on a pre-existing
            installation of Python"""
 
@@ -75,9 +101,7 @@ def main():
 
         else:
             if infoon: print '[INFO] Compiling Python code'
-
-            compile_command = 'python ' + checkout_path + os.sep \
-                + 'setup_freeze.py build'
+            compile_command = 'python ' + python_setup_file + ' build'
             result = os.system(compile_command)
             if debugon:
                 print "The result of the Python code compile is: %s" % result
@@ -118,35 +142,36 @@ def main():
             os.rename(dist_file, production_file)
 
 
-    def UpdateVersionTagInFile(file, release_version):
-        """Update the version information within an include file"""
+    def UpdateVersionTagInFiles(files, release_version):
+        """Update placeholder version information within a list of files"""
 
-        # Open tmp file, read in orig and make changes in tmp file.
-        o = open("updated_include_file.tmp","a")
-        for line in open(file):
-            line = line.replace(app_release_ver_placeholder, release_version)
-            o.write(line) 
-        o.close()
+        for file in files:
+            if infoon: print "[INFO] Updating version tag in: %s" % file
 
-        # Replace original with updated copy
-        os.remove(file)
-        os.rename("updated_include_file.tmp", file)
+            # Open tmp file, read in orig and make changes in tmp file.
+            o = open("updated_file.tmp","a")
+            for line in open(file):
+                line = line.replace(app_release_ver_placeholder, release_version)
+                o.write(line) 
+            o.close()
 
-    def BuildInnoSetupInstaller(release_version):
+            # Replace original with updated copy
+            os.remove(file)
+            os.rename("updated_file.tmp", file)
+
+    def BuildInnoSetupInstaller(project_file, release_version):
         """Produce an Inno Setup installer"""
 
         if infoon: print '[INFO] Compiling Inno Setup project'
 
         # iscc /Q /O"%OUTPUT_DIR%" /d"MY_BUILD_VERSION=r9000" "%BUILD_DIR%\%APPLICATION_NAME%\%APP_ISS_FILE%"
         compile_command = 'iscc /Q  /O' + output_dir + " " \
-            + '/d"MY_BUILD_VERSION=' + release_version + '"' + " " \
-            + checkout_path \
-            + os.sep + 'installer' + os.sep + inno_setup_project_file
+            + '/d"MY_BUILD_VERSION=' + release_version + '" ' + project_file
 
         if debugon: print compile_command
         os.system(compile_command)
 
-    def BuildWiXProject(release_version):
+    def BuildWiXProject(project_file, release_version):
         """Build MSI (Windows Installer) file"""
         # stub function
         pass
@@ -157,10 +182,15 @@ def main():
 
     if infoon: print "[INFO] Beginning build - %s" % date
 
-    # Change CWD to build_dir
-    os.chdir(build_dir)
-
-    if not os.path.exists(checkout_path):
+    if os.path.exists(checkout_path):
+        if infoon:
+            print '[INFO] Already exists: %s' % \
+                build_dir + os.sep + application_name
+            print '[INFO] Skipping checkout and attempting to build %s %s' \
+                % (application_name, release_version)
+    else:
+        # Change CWD to build_dir
+        os.chdir(build_dir)
         CheckoutSVN(synclosure_repo_url, checkout_path)
 
     # Change CWD to working copy
@@ -177,28 +207,18 @@ def main():
     if debugon: 
         print "[DEBUG] release_version is %s" % release_version
 
-    if infoon:
-        print '[INFO] Already exists: %s' % \
-            build_dir + os.sep + application_name
-        print '[INFO] Skipping checkout and attempting to build %s %s' \
-            % (application_name, release_version)
 
-    # Shown during installation.
-    infobefore_file = checkout_path + os.sep + 'installer' \
-        + os.sep + infobefore_file
+    UpdateVersionTagInFiles(files_with_placeholder_content, release_version)
 
-    # Not sure when it's shown, but the cx_freeze_setup is used
-    # to build the "compiled" exe version of Synclosure.
-    cx_freeze_setup = checkout_path + os.sep + cx_freeze_setup
+    CompilePythonCode(cx_freeze_setup)
 
-    UpdateVersionTagInFile(infobefore_file, release_version)
-    UpdateVersionTagInFile(cx_freeze_setup, release_version)
-    UpdateVersionTagInFile(synclosure, release_version)
-    CompilePythonCode()
     UpdatePackageDir()
+
     UpdateDistFiles(sources_dist, sources_production)
-    BuildInnoSetupInstaller(release_version)
-    BuildWiXProject(release_version)
+
+    BuildInnoSetupInstaller(inno_setup_project_file, release_version)
+
+    BuildWiXProject(wix_project_file, release_version)
 
 
 if __name__ == "__main__":
