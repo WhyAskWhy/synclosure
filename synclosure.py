@@ -432,8 +432,8 @@ def main():
                             print 'downloading: ' + enclosure.split("/")[-1]
 
                             #define download folder, etc
-                            if destination and os.path.isdir(cmdlineOptions.destination) and not os.path.isfile(cmdlineOptions.destination):
-                                downloadfolder = cmdlineOptions.destination
+                            if destination and os.path.isdir(destination) and not os.path.isfile(destination):
+                                downloadfolder = destination
                             else:                            
                                 # Apply the regular expression against the title of the RSS Podcast feed and 
                                 # use the result as the folder to download the list of enclosures to             
