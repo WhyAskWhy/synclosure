@@ -190,6 +190,7 @@ def main():
 
         UpdateVersionTagInFile(infobefore_file, release_version)
         UpdateVersionTagInFile(cx_freeze_setup, release_version)
+        UpdateVersionTagInFile(synclosure, release_version)
         CompilePythonCode()
         UpdatePackageDir()
         UpdateDistFiles(sources_dist, sources_production)
@@ -223,6 +224,7 @@ def main():
 
         UpdateVersionTagInFile(infobefore_file, release_version)
         UpdateVersionTagInFile(cx_freeze_setup, release_version)
+        UpdateVersionTagInFile(synclosure, release_version)
         CompilePythonCode()
         UpdatePackageDir()
         UpdateDistFiles(sources_dist, sources_production)
