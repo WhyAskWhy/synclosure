@@ -80,21 +80,23 @@ def main():
     def UpdatePackageDir():
         """Moves content to be installed into package dir"""
 
-        # Move compiled files to 'package' dir.
-        os.rename(checkout_path + os.sep + 'build\exe.win32-' \
-            + installed_python_version, package_dir)
-        os.rmdir(checkout_path + os.sep + 'build')
+        # Skip moving/copying anything if the directory exists.
+        if not os.path.exists(package_dir):
 
-        # Move docs & licenses to 'package' dir.
-        os.rename(checkout_path + os.sep + 'docs', package_dir \
-            + os.sep + 'docs')
-        os.rename(checkout_path + os.sep + 'licenses', package_dir \
-            + os.sep + 'licenses')
+            # Move compiled files to 'package' dir.
+            os.rename(checkout_path + os.sep + 'build\exe.win32-' \
+                + installed_python_version, package_dir)
+            os.rmdir(checkout_path + os.sep + 'build')
 
-        # Get a copy of the icon
-        shutil.copyfile(checkout_path + os.sep + 'installer' + os.sep \
-            + icon_file, package_dir + os.sep + icon_file)
+            # Move docs & licenses to 'package' dir.
+            os.rename(checkout_path + os.sep + 'docs', package_dir \
+                + os.sep + 'docs')
+            os.rename(checkout_path + os.sep + 'licenses', package_dir \
+                + os.sep + 'licenses')
 
+            # Get a copy of the icon
+            shutil.copyfile(checkout_path + os.sep + 'installer' + os.sep \
+                + icon_file, package_dir + os.sep + icon_file)
 
 
     def UpdateVersionTagInFile(file, release_version):
