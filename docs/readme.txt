@@ -18,27 +18,40 @@ It supports filter keywords, custom actions and a caching mechanism.
 ==================
 USAGE
 ==================
-  - Edit the "sources.ini" file. One RSS URL fits on one line. Deleting it 
-    will create a default file. Comments begin with a '#' character and 
-    blank lines are allowed.
- 
-  - Include on certain types of files. For example, only want mp3 files? 
-    Include them: <synclosure -imp3>
 
-  - Exclude certain types of files. For example, don't want mov files? 
-    Exclude them: <synclosure -emov>
+Editing the "sources.ini" file.
 
-  - Use custom actions. You want torrent files to be automatically 
-    handled over to your BitTorrent Client?
-    <synclosure -a torrent "c:\program files\abc\abc.exe">
+    One RSS URL fits on one line. Deleting it will create a default file. 
+    Comments begin with a '#' character and blank lines are allowed.
 
-  - Where would you like your destination folder?
+Including only certain types of files. 
+
+    For example, only want mp3 files? Include them: 
+    synclosure -imp3
+
+Exclude certain types of files. 
+
+    For example, don't want mov files? Exclude them: 
+    synclosure -emov
+
+Using custom actions. 
+
+    You want torrent files to be automatically  handled over to your 
+    BitTorrent Client?
+    synclosure -a torrent "c:\program files\abc\abc.exe"
+
+Specifying a destination folder.
+
+    Synclosure will create directories based on the names of the feeds it
+    parses and will place them in the same directory as the script. If you
+    would like to place them somewhere else, specify the directory.
     synclosure -d COOKIES_PODCAST
 
-  - Create a link to synclosure.exe (or synclosure.py if using source). 
+Scheduled downloads.
+
+    Create a link to synclosure.exe (or synclosure.py if using source). 
     Include it in your cronjob/scheduler or manually start it when your
     computer is idle.
-
 
 ==================
 REQUIREMENTS 
@@ -51,15 +64,14 @@ binary installation:
     - Winvows 7
 
 source installation:
- - Python 2.5.x
-     http://www.python.org/download/releases/
-     http://www.python.org/ftp/python/
+    - Python 2.5.x
+        http://www.python.org/download/releases/
+        http://www.python.org/ftp/python/
 
- - Universal Feed Parser
-     http://www.feedparser.org/
+    - Universal Feed Parser (included)
+        http://www.feedparser.org/
 
-   Note: This is included with source and binary installations, but it has
-         it's own license. See 'License' at the bottom of this file.
+        Note: Has it's own license. See'License' at the bottom of this file.
 
 
 ==================
@@ -68,20 +80,20 @@ INSTALLATION
 
 binary installation:
 
-Run setup_synclosure.exe and follow the directions. You do not require 
-administrator privileges to install or run Synclosure, but you have to
-install to an unprotected location if installing as a non-administrator.
+    Run setup_synclosure.exe and follow the directions. You do not require 
+    administrator privileges to install or run Synclosure, but you have to
+    install to an unprotected location if installing as a non-administrator.
 
 source installation:
 
-Download latest source archive or checkout from version conntrol. Everything
-you  need to run it should be included.
+    Download latest source archive or checkout from version conntrol.
+    Everything you need to run it should be included.
 
 See http://projects.whyaskwhy.org/projects/synclosure/wiki/Installation for 
 more details.
 
 
-Please let us know if you successfully use Synclosure on Windows 98/ME)
+Please let us know if you successfully use Synclosure on Windows 98/ME)!
 
 
 ==================
