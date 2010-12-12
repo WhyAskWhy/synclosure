@@ -107,6 +107,7 @@ InfoBeforeFile=infobefore.rtf
 ; This information shows up as a page in the installer after install is done.
 ; InfoAfterFile=infoafter.rtf
 
+LicenseFile=..\package\licenses\synclosure\LICENSE.txt
 
 
 [Messages]
