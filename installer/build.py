@@ -190,6 +190,7 @@ def main():
         UpdateVersionTagInFile(cx_freeze_setup, release_version)
         CompilePythonCode()
         UpdatePackageDir()
+        UpdateDistFiles()
         BuildInnoSetupInstaller(release_version)
         BuildWiXProject(release_version)
 
@@ -221,6 +222,7 @@ def main():
         UpdateVersionTagInFile(infobefore_file, release_version)
         CompilePythonCode()
         UpdatePackageDir()
+        UpdateDistFiles()
         BuildInnoSetupInstaller(release_version)
         BuildWiXProject(release_version)
 
