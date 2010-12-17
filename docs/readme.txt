@@ -61,7 +61,7 @@ binary installation:
     - Windows 2k
     - Windows XP
     - Windows Vista
-    - Winvows 7
+    - Windows 7
 
 source installation:
     - Python 2.5.x
@@ -71,7 +71,7 @@ source installation:
     - Universal Feed Parser (included)
         http://www.feedparser.org/
 
-        Note: Has it's own license. See'License' at the bottom of this file.
+        Note: Has it's own license. See 'License' at the bottom of this file.
 
 
 ==================
@@ -86,7 +86,7 @@ binary installation:
 
 source installation:
 
-    Download latest source archive or checkout from version conntrol.
+    Download latest source archive or checkout from version control.
     Everything you need to run it should be included.
 
 See http://projects.whyaskwhy.org/projects/synclosure/wiki/Installation for 
