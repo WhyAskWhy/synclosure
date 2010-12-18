@@ -12,8 +12,8 @@
 #define MyAppPublisher "WhyAskWhy.org"
 #define MyAppSupportURL "http://projects.whyaskwhy.org/"
 #define MyAppPublisherURL "http://www.whyaskwhy.org/"
-#define MyAppCopyrightOwner "TBD"
-#define MyAppCopyrightYear "TBD"
+#define MyAppCopyrightOwner "WhyAskWhy.org"
+#define MyAppCopyrightYear "2007"
 
 #define MyAppURL "http://projects.whyaskwhy.org/"
 #define MyAppWikiURL "http://projects.whyaskwhy.org/projects/synclosure/wiki/"
