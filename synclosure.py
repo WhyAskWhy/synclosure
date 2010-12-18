@@ -411,7 +411,7 @@ def main():
     # Destination was not set on commandline
     else:
         # Use the CWD as the path for downloads.
-        downloadfolder = os.getcwd
+        downloadfolder = os.getcwd()
 
     feedcount = len(feedlist)
     print "Beginnging feed processing ..."
