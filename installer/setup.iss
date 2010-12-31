@@ -49,10 +49,12 @@ AppUpdatesURL={#MyAppURL}
 
 ; Set to AppPublisher value by default
 ;VersionInfoCompany=
-VersionInfoCopyright=(c) {#MyAppCopyrightYear} {#MyAppCopyrightOwner}
+AppCopyright=Original code and name (C) by raphael balimann, 2004. Modifications (C) {#MyAppCopyrightYear} {#MyAppCopyrightOwner}
+; Set to AppCopyright value by default
+;VersionInfoCopyright=
 VersionInfoDescription={#MyAppVerName} installer
 VersionInfoProductName={#MyAppName}
-VersionInfoProductTextVersion=VERSION_PLACEHOLDER
+VersionInfoProductTextVersion={#VersionInfoProductTextVersion}
 VersionInfoVersion={#VersionInfoVersion}
 VersionInfoTextVersion={#VersionInfoVersion}
 DefaultDirName={pf}\{#MyAppPublisher}\{#MyAppName}
