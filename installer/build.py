@@ -175,8 +175,34 @@ def main():
 
     def build_wix_project(project_file, release_version):
         """Build MSI (Windows Installer) file"""
-        # stub function
-        pass
+
+        # Cleanup from last build.
+        for file in glob.glob("*.msi"):
+         os.remove(file)
+
+        for file in glob.glob("*.wixpdb"):
+         os.remove(file)
+
+        for file in glob.glob("*.wixobj"):
+         os.remove(file)
+
+        output_file_name = "setup_%s" % APPLICATION_NAME.lower()
+        candle_command = \
+         """candle -nologo "%s" -ext "WixUIExtension.dll" -o %s.wixobj""" \
+         % (project_file, output_file_name)
+
+        light_command = \
+         """light -nologo %s.wixobj -o "%s" -ext "WixUIExtension.dll" """ \
+         % (output_file_name, output_file_name)
+
+        if DEBUG_ON: print "candle_command: %s" % candle_command
+        if DEBUG_ON: print "light_command: %s" % light_command
+
+        if INFO_ON: print "Calling candle ..."
+        os.system (candle_command)
+
+        if INFO_ON: print "\nCalling light ..."
+        os.system (light_command)
 
 #####################################
 # Initial Setup
@@ -221,7 +247,7 @@ def main():
 
     build_innosetup_installer(INNO_SETUP_PROJECT_FILE, release_version)
 
-    build_wix_project(WIX_PROJECT_FILE, release_version)
+    # build_wix_project(WIX_PROJECT_FILE, release_version)
 
 
 if __name__ == "__main__":
