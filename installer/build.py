@@ -165,10 +165,10 @@ def main():
 
         if INFO_ON: print '[INFO] Compiling Inno Setup project'
 
-        # iscc /Q /O"%OUTPUT_DIR%" /d"MY_BUILD_VERSION=r9000" "%BUILD_DIR%\%APPLICATION_NAME%\%APP_ISS_FILE%"
+        # iscc /Q /O"%OUTPUT_DIR%" "%BUILD_DIR%\%APPLICATION_NAME%\%APP_ISS_FILE%"
         # Using triple quotes to handle paths with spaces
-        compile_command = """iscc /Q /O"%s" /d"MY_BUILD_VERSION=%s" "%s" """ % \
-            (OUTPUT_DIR, release_version, project_file)
+        compile_command = """iscc /Q /O"%s" "%s" """ % \
+            (OUTPUT_DIR, project_file)
 
         if DEBUG_ON: print compile_command
         os.system(compile_command)
