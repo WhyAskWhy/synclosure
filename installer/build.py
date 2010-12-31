@@ -101,7 +101,8 @@ def main():
 
         else:
             if infoon: print '[INFO] Compiling Python code'
-            compile_command = 'python ' + python_setup_file + ' build'
+            # Using triple quotes to handle path with spaces
+            compile_command = """python "%s" build """ % python_setup_file
             result = os.system(compile_command)
             if debugon:
                 print "The result of the Python code compile is: %s" % result
@@ -165,8 +166,9 @@ def main():
         if infoon: print '[INFO] Compiling Inno Setup project'
 
         # iscc /Q /O"%OUTPUT_DIR%" /d"MY_BUILD_VERSION=r9000" "%BUILD_DIR%\%APPLICATION_NAME%\%APP_ISS_FILE%"
-        compile_command = 'iscc /Q  /O' + output_dir + " " \
-            + '/d"MY_BUILD_VERSION=' + release_version + '" ' + project_file
+        # Using triple quotes to handle paths with spaces
+        compile_command = """iscc /Q /O"%s" /d"MY_BUILD_VERSION=%s" "%s" """ % \
+            (output_dir, release_version, project_file)
 
         if debugon: print compile_command
         os.system(compile_command)
