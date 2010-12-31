@@ -5,7 +5,111 @@
 -->
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-<!-- Reminder: Use "VERSION_ PLACEHOLDER" (without space) in place of 
-     version info -->
 
+<!--
+    CONSTANTS for use later in the file. These match the values in setup.iss
+-->
+
+    <Property Id="MyAppName" 
+              Value="Synclosure" />
+
+    <Property Id="MyAppVerName" 
+              Value="Synclosure VERSION_PLACEHOLDER" />
+
+    <Property Id="MyAppPublisher" 
+              Value="WhyAskWhy.org" />
+
+    <Property Id="MyAppSupportURL" 
+              Value="http://projects.whyaskwhy.org/" />
+
+    <Property Id="MyAppPublisherURL" 
+              Value="http://www.whyaskwhy.org/" />
+
+    <Property Id="MyAppCopyrightOwner" 
+              Value="WhyAskWhy.org" />
+              
+    <Property Id="MyAppCopyrightYear" 
+              Value="2007" />
+          
+    <!-- The UpgradeCode should not be changed.  -->
+    <Product
+         Id="*"
+         Name="[MyAppVerName]"
+         Language="1033"
+         Version="1.0.0.0"
+         Manufacturer="[MyAppPublisher]"
+         UpgradeCode="{B1F75719-7BD9-48C2-9760-87E7097D26AD}">
+
+        <Package InstallerVersion="301" Compressed="yes" />
+        <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+        <!--Directory structure-->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory
+                     Id="MyProgramDir" Name="[MyAppPublisher]" />
+                <Directory Id="ProgramMenuFolder">
+                    <Directory
+                         Id="MyShortcutsDir" Name="[MyAppPublisher]" />
+                </Directory>
+            </Directory>
+        </Directory>
+
+        <!--Components-->
+        <DirectoryRef Id="MyProgramDir">
+            <Component
+                 Id="CMP_InstallMeTXT"
+                 Guid="E8A58B7B-F031-4548-9BDD-7A6796C8460D">
+                <File
+                     Id="FILE_InstallMeTXT"
+                     Source="InstallMe.txt" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
+        <!--Start Menu Shortcuts-->
+        <DirectoryRef Id="MyShortcutsDir">
+            <Component Id="CMP_DocumentationShortcut"
+                 Guid="33741C82-30BF-41AF-8246-44A5DCFCF953">
+
+                <Shortcut
+                     Id="DocumentationStartMenuShortcut"
+                     Name="Documentation"
+                     Description="Read [MyAppName] Documentation"
+                     Target="[MyProgramDir]InstallMe.txt" />
+
+                <Shortcut
+                     Id="UninstallShortcut"
+                     Name="Uninstall InstallPractice"
+                     Description="Uninstalls Awesome Software"
+                     Target="[System64Folder]msiexec.exe"
+                     Arguments="/x [ProductCode]" />
+
+                <RemoveFolder
+                     Id="RemoveMyShortcutsDir" On="uninstall" />
+
+                 <!-- FIXME: Needed? -->
+                <RegistryValue
+                     Root="HKLM"
+                     Key="Software\[MyAppPublisher]\[MyAppName]"
+                     Name="installed"
+                     Type="integer"
+                     Value="1"
+                     KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
+        <!--Features-->
+        <Feature
+             Id="ProductFeature" Title="Main Product" Level="1">
+            <ComponentRef Id="CMP_InstallMeTXT" />
+            <ComponentRef Id="CMP_DocumentationShortcut" />
+        </Feature>
+
+        <!--User Interface-->
+        <UIRef Id="WixUI_Minimal" />
+        <WixVariable 
+            Id="WixUILicenseRtf" 
+            Value="..\licenses\synclosure\license.rtf" />
+
+    </Product>
 </Wix>
