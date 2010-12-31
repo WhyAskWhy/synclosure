@@ -14,50 +14,50 @@ import shutil
 import pysvn
 
 # Printout verbose bits of info during execution? True/False
-debugon = False
+DEBUG_ON = False
 
 # Printout status messages, current build phase, etc
-infoon = True
+INFO_ON = True
 
 
 def main():
-    application_name = 'Synclosure'
+    APPLICATION_NAME = 'Synclosure'
 
-    app_dev_release_prefix = 'dev-svn'
+    APP_DEV_RELEASE_PREFIX = 'dev-svn'
 
-    # value of app_dev_release_prefix for dev builds, '0.2' for release build
-    application_release_version = app_dev_release_prefix # '0.2'
-    app_release_ver_placeholder = 'VERSION_PLACEHOLDER'
+    # value of APP_DEV_RELEASE_PREFIX for dev builds, '0.2' for release build
+    APPLICATION_RELEASE_VERSION = APP_DEV_RELEASE_PREFIX # '0.2'
+    APP_RELEASE_VER_PLACEHOLDER = 'VERSION_PLACEHOLDER'
 
     # Use a tag if doing a release build
-    synclosure_repo_url='http://projects.whyaskwhy.org/svn/synclosure/trunk/'
-    installed_python_version='2.7'
-    icon_file = 'synclosure.ico'
-    sources_dist = 'sources.dist.ini'
-    sources_production = 'sources.ini'
+    SYNCLOSURE_REPO_URL='http://projects.whyaskwhy.org/svn/synclosure/trunk/'
+    INSTALLED_PYTHON_VERSION='2.7'
+    ICON_FILE = 'synclosure.ico'
+    SOURCES_DIST = 'sources.dist.ini'
+    SOURCES_PRODUCTION = 'sources.ini'
 
-    # If not hardcoded, the build_dir is the path where this script is located,
+    # If not hardcoded, the BUILD_DIR is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
-    build_dir = sys.path[0]
-    output_dir = sys.path[0]
+    BUILD_DIR = sys.path[0]
+    OUTPUT_DIR = sys.path[0]
 
-    checkout_path = build_dir + os.sep + application_name
+    CHECKOUT_PATH = BUILD_DIR + os.sep + APPLICATION_NAME
 
     # The contents included within the installer
-    package_dir = checkout_path + os.sep + 'package'
-    date = datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
+    PACKAGE_DIR = CHECKOUT_PATH + os.sep + 'package'
+    DATE = datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
 
     # #####################
     # Project Files
     # #####################
     # These need to stay as separate values from 
     # files_with_placeholder_content var due to use in build functions?
-    cx_freeze_setup = checkout_path + os.sep + 'setup_freeze.py'
+    CX_FREEZE_SETUP = CHECKOUT_PATH + os.sep + 'setup_freeze.py'
 
-    inno_setup_project_file = checkout_path + os.sep + 'installer' \
+    INNO_SETUP_PROJECT_FILE = CHECKOUT_PATH + os.sep + 'installer' \
         + os.sep + 'setup.iss'
 
-    wix_project_file = checkout_path + os.sep + 'installer' \
+    WIX_PROJECT_FILE = CHECKOUT_PATH + os.sep + 'installer' \
         + os.sep + 'setup.wxs'
 
     # ######################################## #
@@ -67,74 +67,74 @@ def main():
     files_with_placeholder_content = [
 
         # Shown during installation.
-        checkout_path + os.sep + 'installer' + os.sep + 'infobefore.rtf',
-        checkout_path + os.sep + 'docs' + os.sep + 'readme.txt',
-        checkout_path + os.sep + 'synclosure.py',
+        CHECKOUT_PATH + os.sep + 'installer' + os.sep + 'infobefore.rtf',
+        CHECKOUT_PATH + os.sep + 'docs' + os.sep + 'readme.txt',
+        CHECKOUT_PATH + os.sep + 'synclosure.py',
 
-        # Not sure when it's shown, but the cx_freeze_setup is used
+        # Not sure when it's shown, but the CX_FREEZE_SETUP is used
         # to build the "compiled" exe version of Synclosure.
-         cx_freeze_setup,
-         inno_setup_project_file,
-         wix_project_file,
+         CX_FREEZE_SETUP,
+         INNO_SETUP_PROJECT_FILE,
+         WIX_PROJECT_FILE,
     ]
 
-    def CheckoutSVN(url, checkout_path):
+    def checkout_svn(url, CHECKOUT_PATH):
         """Checks out SVN working copy"""
 
-        if infoon: print '[INFO] Checking out working copy of %s' % url
+        if INFO_ON: print '[INFO] Checking out working copy of %s' % url
         client = pysvn.Client()
-        client.checkout(url, checkout_path)
+        client.checkout(url, CHECKOUT_PATH)
 
-    def GetRevision():
+    def get_revision():
         """Returns revision number of working copy as a string"""
 
         client = pysvn.Client()
-        return str(client.info(checkout_path).revision.number)
+        return str(client.info(CHECKOUT_PATH).revision.number)
 
-    def CompilePythonCode(python_setup_file):
+    def compile_python_code(python_setup_file):
         """Produce a Windows executable that doesn't rely on a pre-existing
            installation of Python"""
 
-        if os.path.exists(package_dir):
-            if infoon: 
+        if os.path.exists(PACKAGE_DIR):
+            if INFO_ON: 
                 print '[INFO] Compiled Python code exists, skipping compilation'
 
         else:
-            if infoon: print '[INFO] Compiling Python code'
+            if INFO_ON: print '[INFO] Compiling Python code'
             # Using triple quotes to handle path with spaces
             compile_command = """python "%s" build """ % python_setup_file
             result = os.system(compile_command)
-            if debugon:
+            if DEBUG_ON:
                 print "The result of the Python code compile is: %s" % result
 
 
-    def UpdatePackageDir():
+    def update_package_dir():
         """Moves content to be installed into package dir"""
 
         # Skip moving/copying anything if the directory exists.
-        if not os.path.exists(package_dir):
+        if not os.path.exists(PACKAGE_DIR):
 
             # Move compiled files to 'package' dir.
-            os.rename(checkout_path + os.sep + 'build\exe.win32-' \
-                + installed_python_version, package_dir)
-            os.rmdir(checkout_path + os.sep + 'build')
+            os.rename(CHECKOUT_PATH + os.sep + 'build\exe.win32-' \
+                + INSTALLED_PYTHON_VERSION, PACKAGE_DIR)
+            os.rmdir(CHECKOUT_PATH + os.sep + 'build')
 
             # Move docs & licenses to 'package' dir.
-            os.rename(checkout_path + os.sep + 'docs', package_dir \
+            os.rename(CHECKOUT_PATH + os.sep + 'docs', PACKAGE_DIR \
                 + os.sep + 'docs')
-            os.rename(checkout_path + os.sep + 'licenses', package_dir \
+            os.rename(CHECKOUT_PATH + os.sep + 'licenses', PACKAGE_DIR \
                 + os.sep + 'licenses')
 
             # Get a copy of the icon
-            shutil.copyfile(checkout_path + os.sep + 'installer' + os.sep \
-                + icon_file, package_dir + os.sep + icon_file)
+            shutil.copyfile(CHECKOUT_PATH + os.sep + 'installer' + os.sep \
+                + ICON_FILE, PACKAGE_DIR + os.sep + ICON_FILE)
 
-    def UpdateDistFiles(dist_file, production_file):
+    def update_dist_files(dist_file, production_file):
         """Renames example files so they can be used"""
 
         # Reset variables to full path to files
-        production_file = checkout_path + os.sep + production_file
-        dist_file = checkout_path + os.sep + dist_file
+        production_file = CHECKOUT_PATH + os.sep + production_file
+        dist_file = CHECKOUT_PATH + os.sep + dist_file
 
         # Skip renaming/moving anything if content has already been moved.
         if not os.path.exists(production_file):
@@ -143,16 +143,16 @@ def main():
             os.rename(dist_file, production_file)
 
 
-    def UpdateVersionTagInFiles(files, release_version):
+    def update_version_tag_in_files(files, release_version):
         """Update placeholder version information within a list of files"""
 
         for file in files:
-            if infoon: print "[INFO] Updating version tag in: %s" % file
+            if INFO_ON: print "[INFO] Updating version tag in: %s" % file
 
             # Open tmp file, read in orig and make changes in tmp file.
             o = open("updated_file.tmp","a")
             for line in open(file):
-                line = line.replace(app_release_ver_placeholder, release_version)
+                line = line.replace(APP_RELEASE_VER_PLACEHOLDER, release_version)
                 o.write(line) 
             o.close()
 
@@ -160,20 +160,20 @@ def main():
             os.remove(file)
             os.rename("updated_file.tmp", file)
 
-    def BuildInnoSetupInstaller(project_file, release_version):
+    def build_innosetup_installer(project_file, release_version):
         """Produce an Inno Setup installer"""
 
-        if infoon: print '[INFO] Compiling Inno Setup project'
+        if INFO_ON: print '[INFO] Compiling Inno Setup project'
 
         # iscc /Q /O"%OUTPUT_DIR%" /d"MY_BUILD_VERSION=r9000" "%BUILD_DIR%\%APPLICATION_NAME%\%APP_ISS_FILE%"
         # Using triple quotes to handle paths with spaces
         compile_command = """iscc /Q /O"%s" /d"MY_BUILD_VERSION=%s" "%s" """ % \
-            (output_dir, release_version, project_file)
+            (OUTPUT_DIR, release_version, project_file)
 
-        if debugon: print compile_command
+        if DEBUG_ON: print compile_command
         os.system(compile_command)
 
-    def BuildWiXProject(project_file, release_version):
+    def build_wix_project(project_file, release_version):
         """Build MSI (Windows Installer) file"""
         # stub function
         pass
@@ -182,46 +182,46 @@ def main():
 # Initial Setup
 #####################################
 
-    if infoon: print "[INFO] Beginning build - %s" % date
+    if INFO_ON: print "[INFO] Beginning build - %s" % DATE
 
-    if os.path.exists(checkout_path):
-        if infoon:
-            print '[INFO] Already exists: %s' % checkout_path
+    if os.path.exists(CHECKOUT_PATH):
+        if INFO_ON:
+            print '[INFO] Already exists: %s' % CHECKOUT_PATH
             print '[INFO] Skipping checkout'
     else:
-        # Change CWD to build_dir
-        os.chdir(build_dir)
-        CheckoutSVN(synclosure_repo_url, checkout_path)
+        # Change CWD to BUILD_DIR
+        os.chdir(BUILD_DIR)
+        checkout_svn(SYNCLOSURE_REPO_URL, CHECKOUT_PATH)
 
     # Change CWD to working copy
-    os.chdir(checkout_path)
+    os.chdir(CHECKOUT_PATH)
 
-    revision = GetRevision()
+    revision = get_revision()
 
     # If this is a development build, append the revision number
-    if application_release_version == app_dev_release_prefix:
-        release_version = app_dev_release_prefix + '-r' + revision
+    if APPLICATION_RELEASE_VERSION == APP_DEV_RELEASE_PREFIX:
+        release_version = APP_DEV_RELEASE_PREFIX + '-r' + revision
     else:
-        release_version = application_release_version
+        release_version = APPLICATION_RELEASE_VERSION
 
-    if debugon: 
+    if DEBUG_ON: 
         print "[DEBUG] release_version is %s" % release_version
 
-    if infoon:
+    if INFO_ON:
         print '[INFO] Attempting to build %s %s' \
-            % (application_name, release_version)
+            % (APPLICATION_NAME, release_version)
 
-    UpdateVersionTagInFiles(files_with_placeholder_content, release_version)
+    update_version_tag_in_files(files_with_placeholder_content, release_version)
 
-    CompilePythonCode(cx_freeze_setup)
+    compile_python_code(CX_FREEZE_SETUP)
 
-    UpdatePackageDir()
+    update_package_dir()
 
-    UpdateDistFiles(sources_dist, sources_production)
+    update_dist_files(SOURCES_DIST, SOURCES_PRODUCTION)
 
-    BuildInnoSetupInstaller(inno_setup_project_file, release_version)
+    build_innosetup_installer(INNO_SETUP_PROJECT_FILE, release_version)
 
-    BuildWiXProject(wix_project_file, release_version)
+    build_wix_project(WIX_PROJECT_FILE, release_version)
 
 
 if __name__ == "__main__":
