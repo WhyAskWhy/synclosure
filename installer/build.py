@@ -61,6 +61,9 @@ def main():
     WIX_PROJECT_FILE = CHECKOUT_PATH + os.sep + 'installer' \
         + os.sep + 'setup.wxs'
 
+    WIX_PROJECT_INCLUDE_FILE = CHECKOUT_PATH + os.sep + 'installer' \
+        + os.sep + 'setup.wxi'
+
     # ######################################## #
     # Files to have placeholder values updated during build
     # ######################################## #
@@ -77,6 +80,7 @@ def main():
          CX_FREEZE_SETUP,
          INNO_SETUP_PROJECT_FILE,
          WIX_PROJECT_FILE,
+         WIX_PROJECT_INCLUDE_FILE,
     ]
 
     def checkout_svn(url, CHECKOUT_PATH):

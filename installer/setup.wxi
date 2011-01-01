@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    $Id$
+    $HeadURL$
+-->
+
+<!-- These should be kept in sync with the values in setup.iss -->
+
+<Include>
+    <?define MyAppPublisher = "WhyAskWhy.org"?>
+    <?define MyAppPublisherURL = "http://www.whyaskwhy.org/"?>
+
+    <?define MyAppName = "Synclosure"?>
+    <?define MyAppVerName = "$(var.MyAppName) VERSION_PLACEHOLDER"?>
+    <?define MyAppRegistry = "Software\$(var.MyAppPublisher)\$(var.MyAppName)"?>
+    <?define MyAppSupportURL = "http://projects.whyaskwhy.org/projects/synclosure/wiki/"?>
+    <?define MyAppCopyrightOwner = "WhyAskWhy.org"?>
+    <?define MyAppCopyrightYear = "2007"?>
+    <?define MyAppCurrentMaintainer = "Deoren Moor"?>
+    <?define MyAppCopyright="Original code and name (C) by raphael balimann, 2004. Modifications (C) $(var.MyAppCopyrightYear) $(var.MyAppCopyrightOwner)"?>
+
+    <?define MyAppLicensePath = "..\licenses\synclosure\license.rtf"?>
+
+    <!--
+    <?define THIS = "THAT"?>
+    -->
+
+    <!-- The UpgradeCode should not be changed.  -->
+    <?define MyProductUpgradeCode = "{B1F75719-7BD9-48C2-9760-87E7097D26AD}" ?>
+    <?define MyPackageDescription= "$(var.MyAppName) is a RSS aggregator to flexibly download files in enclosures. It supports filter keywords, custom actions and a caching mechanism."?>
+    <?define MyPackageComments = "Installs $(var.MyAppVerName) from $(var.MyAppPublisher)." ?>
+
+</Include>

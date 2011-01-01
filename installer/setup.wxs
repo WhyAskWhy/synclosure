@@ -1,66 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
     $Id$
     $HeadURL$
 -->
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-<!-- 
-    * The Package element publishes the summary properties for the MSI.
-    * The Product element contains its actual content.
+<!--
+  The Package element describes the installer (summary properties for the MSI).
+  The Product element describes the software that's in the installer.
  -->
 
-    <!-- The UpgradeCode should not be changed.  -->
+<?include setup.wxi ?>
+
+
     <Product
          Id="*"
-         Name="Synclosure VERSION_PLACEHOLDER"
+         Name="$(var.MyAppVerName)"
          Language="1033"
          Version="1.0.0.0"
-         Manufacturer="WhyAskWhy.org"
-         UpgradeCode="{B1F75719-7BD9-48C2-9760-87E7097D26AD}">
+         Manufacturer="$(var.MyAppPublisher)"
+         UpgradeCode="$(var.MyProductUpgradeCode)">
 
          <!-- Pg 18 -->
-        <Package InstallerVersion="301" Compressed="yes" />
+        <Package
+            InstallerVersion="301"
+            Compressed="yes"
+            Manufacturer="$(var.MyAppPublisher)"
+            Description="$(var.MyPackageDescription)"
+            Comments="$(var.MyPackageComments)" />
+
         <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
-        <!-- These props should be kept in sync with the values in setup.iss -->
-        <Property Id="MYAPPNAME" 
-                  Value="Synclosure" 
-                  Secure="yes"/>
+        <Icon Id="MyAppIcon" SourceFile="synclosure.ico" />
 
-        <Property Id="MYAPPVERNAME" 
-                  Value="Synclosure VERSION_PLACEHOLDER" 
-                  Secure="yes"/>
-
-        <Property Id="MYAPPPUBLISHER" 
-                  Value="WhyAskWhy.org" 
-                  Secure="yes"/>
-
-        <Property Id="MYAPPSUPPORTURL" 
-                  Value="http://projects.whyaskwhy.org/" 
-                  Secure="yes"/>
-
-        <Property Id="MYAPPPUBLISHERURL" 
-                  Value="http://www.whyaskwhy.org/" 
-                  Secure="yes"/>
-
-        <Property Id="MYAPPCOPYRIGHTOWNER" 
-                  Value="WhyAskWhy.org" 
-                  Secure="yes"/>
-
-        <Property Id="MYAPPCOPYRIGHTYEAR" 
-                  Value="2007" 
-                  Secure="yes"/>
+        <!--Setting properties-->
+        <Property Id="ARPPRODUCTICON" Value="MyAppIcon" />
+        <Property Id="ARPCOMMENTS" Value="(c) $(var.MyAppCopyright)" />
+        <Property Id="ARPNOREPAIR" Value="1" />
+        <Property Id="ARPCONTACT" Value="$(var.MyAppCurrentMaintainer)" />
+        <Property Id="ARPHELPLINK" Value="$(var.MyAppSupportURL)" />
+        <Property Id="ARPREADME" Value="$(var.MyAppSupportURL)" />
 
         <!--Directory structure-->
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
                 <Directory
-                     Id="MyProgramDir" Name="[MYAPPPUBLISHER]" />
+                     Id="MyProgramDir" Name="$(var.MyAppPublisher)" />
                 <Directory Id="ProgramMenuFolder">
                     <Directory
-                         Id="MyShortcutsDir" Name="[MYAPPPUBLISHER]" />
+                         Id="MyShortcutsDir" Name="$(var.MyAppPublisher)" />
                 </Directory>
             </Directory>
         </Directory>
@@ -84,25 +73,25 @@
                 <Shortcut
                      Id="DocumentationStartMenuShortcut"
                      Name="Documentation"
-                     Description="Read [MYAPPNAME] Documentation"
+                     Description="Read $(var.MyAppName) Documentation"
                      Target="[MyProgramDir]InstallMe.txt" />
 
                 <Shortcut
                      Id="UninstallShortcut"
-                     Name="Uninstall InstallPractice"
-                     Description="Uninstalls Awesome Software"
+                     Name="Uninstall $(var.MyAppName)"
+                     Description="Uninstalls $(var.MyAppVerName)"
                      Target="[System64Folder]msiexec.exe"
                      Arguments="/x [ProductCode]" />
 
                 <RemoveFolder
                      Id="RemoveMyShortcutsDir" On="uninstall" />
 
-                <!-- ICE38: Component CMP_DocumentationShortcut installs 
-                to user profile. It must use a registry key under 
+                <!-- ICE38: Component CMP_DocumentationShortcut installs
+                to user profile. It must use a registry key under
                 HKCU as its KeyPath, not a file. -->
                 <RegistryValue
                      Root="HKCU"
-                     Key="Software\[MYAPPPUBLISHER]\[MYAPPNAME]"
+                     Key="$(var.MyAppRegistry)"
                      Name="installed"
                      Type="integer"
                      Value="1"
@@ -120,9 +109,9 @@
         <!--User Interface-->
         <!-- FIXME: Read http://www.tramontana.co.hu/wix/lesson2.php#2.2 -->
         <UIRef Id="WixUI_Minimal" />
-        <WixVariable 
-            Id="WixUILicenseRtf" 
-            Value="..\licenses\synclosure\license.rtf" />
+        <WixVariable
+            Id="WixUILicenseRtf"
+            Value="$(var.MyAppLicensePath)" />
 
     </Product>
 </Wix>
