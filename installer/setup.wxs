@@ -6,51 +6,61 @@
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-<!--
-    CONSTANTS for use later in the file. These match the values in setup.iss
--->
+<!-- 
+    * The Package element publishes the summary properties for the MSI.
+    * The Product element contains its actual content.
+ -->
 
-    <Property Id="MyAppName" 
-              Value="Synclosure" />
-
-    <Property Id="MyAppVerName" 
-              Value="Synclosure VERSION_PLACEHOLDER" />
-
-    <Property Id="MyAppPublisher" 
-              Value="WhyAskWhy.org" />
-
-    <Property Id="MyAppSupportURL" 
-              Value="http://projects.whyaskwhy.org/" />
-
-    <Property Id="MyAppPublisherURL" 
-              Value="http://www.whyaskwhy.org/" />
-
-    <Property Id="MyAppCopyrightOwner" 
-              Value="WhyAskWhy.org" />
-              
-    <Property Id="MyAppCopyrightYear" 
-              Value="2007" />
-          
     <!-- The UpgradeCode should not be changed.  -->
     <Product
          Id="*"
-         Name="[MyAppVerName]"
+         Name="Synclosure VERSION_PLACEHOLDER"
          Language="1033"
          Version="1.0.0.0"
-         Manufacturer="[MyAppPublisher]"
+         Manufacturer="WhyAskWhy.org"
          UpgradeCode="{B1F75719-7BD9-48C2-9760-87E7097D26AD}">
 
+         <!-- Pg 18 -->
         <Package InstallerVersion="301" Compressed="yes" />
         <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+        <!-- These props should be kept in sync with the values in setup.iss -->
+        <Property Id="MYAPPNAME" 
+                  Value="Synclosure" 
+                  Secure="yes"/>
+
+        <Property Id="MYAPPVERNAME" 
+                  Value="Synclosure VERSION_PLACEHOLDER" 
+                  Secure="yes"/>
+
+        <Property Id="MYAPPPUBLISHER" 
+                  Value="WhyAskWhy.org" 
+                  Secure="yes"/>
+
+        <Property Id="MYAPPSUPPORTURL" 
+                  Value="http://projects.whyaskwhy.org/" 
+                  Secure="yes"/>
+
+        <Property Id="MYAPPPUBLISHERURL" 
+                  Value="http://www.whyaskwhy.org/" 
+                  Secure="yes"/>
+
+        <Property Id="MYAPPCOPYRIGHTOWNER" 
+                  Value="WhyAskWhy.org" 
+                  Secure="yes"/>
+
+        <Property Id="MYAPPCOPYRIGHTYEAR" 
+                  Value="2007" 
+                  Secure="yes"/>
 
         <!--Directory structure-->
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
                 <Directory
-                     Id="MyProgramDir" Name="[MyAppPublisher]" />
+                     Id="MyProgramDir" Name="[MYAPPPUBLISHER]" />
                 <Directory Id="ProgramMenuFolder">
                     <Directory
-                         Id="MyShortcutsDir" Name="[MyAppPublisher]" />
+                         Id="MyShortcutsDir" Name="[MYAPPPUBLISHER]" />
                 </Directory>
             </Directory>
         </Directory>
@@ -74,7 +84,7 @@
                 <Shortcut
                      Id="DocumentationStartMenuShortcut"
                      Name="Documentation"
-                     Description="Read [MyAppName] Documentation"
+                     Description="Read [MYAPPNAME] Documentation"
                      Target="[MyProgramDir]InstallMe.txt" />
 
                 <Shortcut
@@ -87,10 +97,12 @@
                 <RemoveFolder
                      Id="RemoveMyShortcutsDir" On="uninstall" />
 
-                 <!-- FIXME: Needed? -->
+                <!-- ICE38: Component CMP_DocumentationShortcut installs 
+                to user profile. It must use a registry key under 
+                HKCU as its KeyPath, not a file. -->
                 <RegistryValue
-                     Root="HKLM"
-                     Key="Software\[MyAppPublisher]\[MyAppName]"
+                     Root="HKCU"
+                     Key="Software\[MYAPPPUBLISHER]\[MYAPPNAME]"
                      Name="installed"
                      Type="integer"
                      Value="1"
@@ -106,6 +118,7 @@
         </Feature>
 
         <!--User Interface-->
+        <!-- FIXME: Read http://www.tramontana.co.hu/wix/lesson2.php#2.2 -->
         <UIRef Id="WixUI_Minimal" />
         <WixVariable 
             Id="WixUILicenseRtf" 
