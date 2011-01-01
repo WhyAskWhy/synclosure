@@ -10,6 +10,14 @@
   The Package element describes the installer (summary properties for the MSI).
   The Product element describes the software that's in the installer.
  -->
+ 
+<!--
+FIXME:
+    * Dynamically set Version number.
+        Thoughts: If dev-svn is found in the version info within build script,
+                  have the build script set the value to 0.0.0.X where X is the
+                  revision number?
+-->
 
 <?include setup.wxi ?>
 
@@ -22,7 +30,6 @@
          Manufacturer="$(var.MyAppPublisher)"
          UpgradeCode="$(var.MyProductUpgradeCode)">
 
-         <!-- Pg 18 -->
         <Package
             InstallerVersion="301"
             Compressed="yes"
@@ -36,7 +43,7 @@
 
         <!--Setting properties-->
         <Property Id="ARPPRODUCTICON" Value="MyAppIcon" />
-        <Property Id="ARPCOMMENTS" Value="(c) $(var.MyAppCopyright)" />
+        <Property Id="ARPCOMMENTS" Value="$(var.MyAppCopyright)" />
         <Property Id="ARPNOREPAIR" Value="1" />
         <Property Id="ARPCONTACT" Value="$(var.MyAppCurrentMaintainer)" />
         <Property Id="ARPHELPLINK" Value="$(var.MyAppSupportURL)" />
