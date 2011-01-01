@@ -11,6 +11,7 @@ import sys
 import datetime
 import shutil
 import glob
+import time
 
 import pysvn
 
@@ -42,10 +43,10 @@ def main():
     BUILD_DIR = sys.path[0]
     OUTPUT_DIR = sys.path[0]
 
-    CHECKOUT_PATH = BUILD_DIR + os.sep + APPLICATION_NAME
+    EXPORT_PATH = BUILD_DIR + os.sep + APPLICATION_NAME
 
     # The contents included within the installer
-    PACKAGE_DIR = CHECKOUT_PATH + os.sep + 'package'
+    PACKAGE_DIR = EXPORT_PATH + os.sep + 'package'
     DATE = datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
 
     # #####################
@@ -53,15 +54,15 @@ def main():
     # #####################
     # These need to stay as separate values from 
     # files_with_placeholder_content var due to use in build functions?
-    CX_FREEZE_SETUP = CHECKOUT_PATH + os.sep + 'setup_freeze.py'
+    CX_FREEZE_SETUP = EXPORT_PATH + os.sep + 'setup_freeze.py'
 
-    INNO_SETUP_PROJECT_FILE = CHECKOUT_PATH + os.sep + 'installer' \
+    INNO_SETUP_PROJECT_FILE = EXPORT_PATH + os.sep + 'installer' \
         + os.sep + 'setup.iss'
 
-    WIX_PROJECT_FILE = CHECKOUT_PATH + os.sep + 'installer' \
+    WIX_PROJECT_FILE = EXPORT_PATH + os.sep + 'installer' \
         + os.sep + 'setup.wxs'
 
-    WIX_PROJECT_INCLUDE_FILE = CHECKOUT_PATH + os.sep + 'installer' \
+    WIX_PROJECT_INCLUDE_FILE = EXPORT_PATH + os.sep + 'installer' \
         + os.sep + 'setup.wxi'
 
     # ######################################## #
@@ -71,9 +72,9 @@ def main():
     files_with_placeholder_content = [
 
         # Shown during installation.
-        CHECKOUT_PATH + os.sep + 'installer' + os.sep + 'infobefore.rtf',
-        CHECKOUT_PATH + os.sep + 'docs' + os.sep + 'readme.txt',
-        CHECKOUT_PATH + os.sep + 'synclosure.py',
+        EXPORT_PATH + os.sep + 'installer' + os.sep + 'infobefore.rtf',
+        EXPORT_PATH + os.sep + 'docs' + os.sep + 'readme.txt',
+        EXPORT_PATH + os.sep + 'synclosure.py',
 
         # Not sure when it's shown, but the CX_FREEZE_SETUP is used
         # to build the "compiled" exe version of Synclosure.
@@ -83,18 +84,23 @@ def main():
          WIX_PROJECT_INCLUDE_FILE,
     ]
 
-    def checkout_svn(url, CHECKOUT_PATH):
-        """Checks out SVN working copy"""
+    def export_svn(url_or_wkco, EXPORT_PATH):
+        """Exports clean files from SVN working copy"""
 
-        if INFO_ON: print '[INFO] Checking out working copy of %s' % url
+        if INFO_ON: print '[INFO] Exporting files from %s' % url_or_wkco
         client = pysvn.Client()
-        client.checkout(url, CHECKOUT_PATH)
 
-    def get_revision():
-        """Returns revision number of working copy as a string"""
+        # http://pysvn.tigris.org/docs/pysvn_prog_ref.html#pysvn_client_export
+        revision = \
+        client.export( url_or_wkco,
+            EXPORT_PATH,
+            force=True,
+            revision=pysvn.Revision( pysvn.opt_revision_kind.head ),
+            native_eol=None,
+            ignore_externals=False,
+            recurse=True )
 
-        client = pysvn.Client()
-        return str(client.info(CHECKOUT_PATH).revision.number)
+        return revision
 
     def compile_python_code(python_setup_file):
         """Produce a Windows executable that doesn't rely on a pre-existing
@@ -113,33 +119,33 @@ def main():
                 print "The result of the Python code compile is: %s" % result
 
 
-    def update_package_dir():
+    def update_package_dir(PACKAGE_DIR):
         """Moves content to be installed into package dir"""
 
         # Skip moving/copying anything if the directory exists.
         if not os.path.exists(PACKAGE_DIR):
 
             # Move compiled files to 'package' dir.
-            os.rename(CHECKOUT_PATH + os.sep + 'build\exe.win32-' \
+            os.rename(EXPORT_PATH + os.sep + 'build\exe.win32-' \
                 + INSTALLED_PYTHON_VERSION, PACKAGE_DIR)
-            os.rmdir(CHECKOUT_PATH + os.sep + 'build')
+            os.rmdir(EXPORT_PATH + os.sep + 'build')
 
             # Move docs & licenses to 'package' dir.
-            os.rename(CHECKOUT_PATH + os.sep + 'docs', PACKAGE_DIR \
+            os.rename(EXPORT_PATH + os.sep + 'docs', PACKAGE_DIR \
                 + os.sep + 'docs')
-            os.rename(CHECKOUT_PATH + os.sep + 'licenses', PACKAGE_DIR \
+            os.rename(EXPORT_PATH + os.sep + 'licenses', PACKAGE_DIR \
                 + os.sep + 'licenses')
 
             # Get a copy of the icon
-            shutil.copyfile(CHECKOUT_PATH + os.sep + 'installer' + os.sep \
+            shutil.copyfile(EXPORT_PATH + os.sep + 'installer' + os.sep \
                 + ICON_FILE, PACKAGE_DIR + os.sep + ICON_FILE)
 
     def update_dist_files(dist_file, production_file):
         """Renames example files so they can be used"""
 
         # Reset variables to full path to files
-        production_file = CHECKOUT_PATH + os.sep + production_file
-        dist_file = CHECKOUT_PATH + os.sep + dist_file
+        production_file = EXPORT_PATH + os.sep + production_file
+        dist_file = EXPORT_PATH + os.sep + dist_file
 
         # Skip renaming/moving anything if content has already been moved.
         if not os.path.exists(production_file):
@@ -165,6 +171,11 @@ def main():
             os.remove(file)
             os.rename("updated_file.tmp", file)
 
+    def create_archives(src, dst):
+        """Create archives for distribution"""
+        pass
+
+
     def build_innosetup_installer(project_file, release_version):
         """Produce an Inno Setup installer"""
 
@@ -180,16 +191,6 @@ def main():
 
     def build_wix_project(project_file, release_version):
         """Build MSI (Windows Installer) file"""
-
-        # Cleanup from last build.
-        for file in glob.glob("*.msi"):
-         os.remove(file)
-
-        for file in glob.glob("*.wixpdb"):
-         os.remove(file)
-
-        for file in glob.glob("*.wixobj"):
-         os.remove(file)
 
         output_file_name = "setup_%s" % APPLICATION_NAME.lower()
         candle_command = \
@@ -209,25 +210,47 @@ def main():
         if INFO_ON: print "\nCalling light ..."
         os.system (light_command)
 
+    def cleanup_build_dir(build_dir, EXPORT_PATH):
+        """Cleanup build area"""
+
+        if INFO_ON: print "[INFO] Cleaning build directory of previous build files"
+        os.chdir(build_dir)
+
+        # Cleanup WiX related files
+        for file in glob.glob("*.msi"):
+         os.remove(file)
+
+        for file in glob.glob("*.wixpdb"):
+         os.remove(file)
+
+        for file in glob.glob("*.wixobj"):
+         os.remove(file)
+
+        # Remove exported files
+        if os.path.exists(EXPORT_PATH):
+            shutil.rmtree(EXPORT_PATH)
+
+        os.remove("setup_synclosure.exe")
+
+        # Give some time for all file removal requests to be honored.
+        time.sleep(3)
+
+
 #####################################
 # Initial Setup
 #####################################
 
-    if INFO_ON: print "[INFO] Beginning build - %s" % DATE
+    if INFO_ON: print "[INFO] Starting %s (%s) " % \
+        (os.path.basename(sys.argv[0]), DATE)
 
-    if os.path.exists(CHECKOUT_PATH):
-        if INFO_ON:
-            print '[INFO] Already exists: %s' % CHECKOUT_PATH
-            print '[INFO] Skipping checkout'
-    else:
-        # Change CWD to BUILD_DIR
-        os.chdir(BUILD_DIR)
-        checkout_svn(SYNCLOSURE_REPO_URL, CHECKOUT_PATH)
+    os.chdir(BUILD_DIR)
+    cleanup_build_dir(BUILD_DIR, EXPORT_PATH)
 
-    # Change CWD to working copy
-    os.chdir(CHECKOUT_PATH)
+    result = export_svn(SYNCLOSURE_REPO_URL, EXPORT_PATH)
+    revision = str(result.number)
 
-    revision = get_revision()
+    # Change CWD to exported files
+    os.chdir(EXPORT_PATH)
 
     # If this is a development build, append the revision number
     if APPLICATION_RELEASE_VERSION == APP_DEV_RELEASE_PREFIX:
@@ -244,9 +267,12 @@ def main():
 
     update_version_tag_in_files(files_with_placeholder_content, release_version)
 
+    # This happens before content is shuffled about for binary packaging
+    create_archives(EXPORT_PATH)
+
     compile_python_code(CX_FREEZE_SETUP)
 
-    update_package_dir()
+    update_package_dir(PACKAGE_DIR)
 
     update_dist_files(SOURCES_DIST, SOURCES_PRODUCTION)
 
