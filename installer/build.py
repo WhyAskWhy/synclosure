@@ -140,6 +140,10 @@ def main():
             os.rename(EXPORT_PATH + os.sep + 'licenses', PACKAGE_DIR \
                 + os.sep + 'licenses')
 
+            # Move sources.ini to 'package' dir.
+            os.rename(EXPORT_PATH + os.sep + 'sources.ini', PACKAGE_DIR \
+                + os.sep + 'sources.ini')
+
             # Get a copy of the icon
             shutil.copyfile(EXPORT_PATH + os.sep + 'installer' + os.sep \
                 + ICON_FILE, PACKAGE_DIR + os.sep + ICON_FILE)
@@ -324,9 +328,9 @@ def main():
 
     compile_python_code(CX_FREEZE_SETUP)
 
-    update_package_dir(PACKAGE_DIR)
-
     update_dist_files(SOURCES_DIST, SOURCES_PRODUCTION)
+
+    update_package_dir(PACKAGE_DIR)
 
     binary_archive_src_dir = EXPORT_PATH + os.sep + "package"
     create_binary_archive(binary_archive_src_dir, BUILD_DIR, release_version)
