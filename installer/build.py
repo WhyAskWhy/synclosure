@@ -38,6 +38,10 @@ def main():
     SOURCES_DIST = 'sources.dist.ini'
     SOURCES_PRODUCTION = 'sources.ini'
 
+    # Maximum amount of attempts that the cleanup function will attempt
+    # to remove the export directory, etc.
+    MAX_ATTEMPTS = 3
+
     # If not hardcoded, the BUILD_DIR is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
     BUILD_DIR = sys.path[0]
@@ -171,10 +175,37 @@ def main():
             os.remove(file)
             os.rename("updated_file.tmp", file)
 
-    def create_archives(src, dst):
+    def create_src_archive(src_dir, dst_dir, release_version):
         """Create archives for distribution"""
-        pass
 
+        archive_app = "7z.exe"
+        dest_file = """%s-%s-src.7z""" % \
+            (APPLICATION_NAME.lower(), release_version)
+
+        dest_file = dst_dir + os.sep + dest_file
+
+        if INFO_ON: print "Creating source archive of %s" % src_dir
+        # Max compression, Multi-threading on, Solid archive creation on
+        archive_command = """%s -t7z -mx=9 -mmt=on -ms=on a "%s" "%s" """ % \
+            (archive_app, dest_file, src_dir)
+        os.system(archive_command)
+
+    def create_binary_archive(src_dir, dst_dir, release_version):
+        """Create archives for distribution"""
+
+        os.chdir(src_dir)
+        
+        archive_app = "7z.exe"
+        dest_file = """%s-%s-win32-bin.7z""" % \
+            (APPLICATION_NAME.lower(), release_version)
+
+        dest_file = dst_dir + os.sep + dest_file
+
+        if INFO_ON: print "Creating source archive of %s" % src_dir
+        # Max compression, Multi-threading on, Solid archive creation on
+        archive_command = """%s -t7z -mx=9 -mmt=on -ms=on a "%s" "%s" """ % \
+            (archive_app, dest_file, src_dir)
+        os.system(archive_command)
 
     def build_innosetup_installer(project_file, release_version):
         """Produce an Inno Setup installer"""
@@ -210,11 +241,32 @@ def main():
         if INFO_ON: print "\nCalling light ..."
         os.system (light_command)
 
-    def cleanup_build_dir(build_dir, EXPORT_PATH):
+    def cleanup_build_dir(build_dir, EXPORT_PATH, MAX_ATTEMPTS, \
+        cleanup_attempts=0):
         """Cleanup build area"""
 
-        if INFO_ON: print "[INFO] Cleaning build directory of previous build files"
+        if cleanup_attempts == MAX_ATTEMPTS:
+            # break or continue?
+            sys.exit("Problems cleaning %s.") % build_dir
+
+        if INFO_ON: print "[INFO] Cleaning build directory"
         os.chdir(build_dir)
+
+        # Remove exported files
+        if os.path.exists(EXPORT_PATH):
+            try:
+                shutil.rmtree(EXPORT_PATH)
+            except:
+                # If there are problems removing exported files, wait a few
+                # moments and try again until MAX_ATTEMPTS is reached.
+                time.sleep(3)
+                cleanup_attempts += 1
+                cleanup_build_dir(build_dir, EXPORT_PATH, MAX_ATTEMPTS, 
+                    cleanup_attempts)
+        
+        # Cleanup 7z archives
+        for file in glob.glob("*.7z"):
+         os.remove(file)
 
         # Cleanup WiX related files
         for file in glob.glob("*.msi"):
@@ -226,11 +278,11 @@ def main():
         for file in glob.glob("*.wixobj"):
          os.remove(file)
 
-        # Remove exported files
-        if os.path.exists(EXPORT_PATH):
-            shutil.rmtree(EXPORT_PATH)
 
-        os.remove("setup_synclosure.exe")
+        try:
+            os.remove("setup_synclosure.exe")
+        except:
+            pass
 
         # Give some time for all file removal requests to be honored.
         time.sleep(3)
@@ -244,7 +296,7 @@ def main():
         (os.path.basename(sys.argv[0]), DATE)
 
     os.chdir(BUILD_DIR)
-    cleanup_build_dir(BUILD_DIR, EXPORT_PATH)
+    cleanup_build_dir(BUILD_DIR, EXPORT_PATH, MAX_ATTEMPTS)
 
     result = export_svn(SYNCLOSURE_REPO_URL, EXPORT_PATH)
     revision = str(result.number)
@@ -268,13 +320,16 @@ def main():
     update_version_tag_in_files(files_with_placeholder_content, release_version)
 
     # This happens before content is shuffled about for binary packaging
-    create_archives(EXPORT_PATH)
+    create_src_archive(EXPORT_PATH, BUILD_DIR, release_version)
 
     compile_python_code(CX_FREEZE_SETUP)
 
     update_package_dir(PACKAGE_DIR)
 
     update_dist_files(SOURCES_DIST, SOURCES_PRODUCTION)
+
+    binary_archive_src_dir = EXPORT_PATH + os.sep + "package"
+    create_binary_archive(binary_archive_src_dir, BUILD_DIR, release_version)
 
     build_innosetup_installer(INNO_SETUP_PROJECT_FILE, release_version)
 
