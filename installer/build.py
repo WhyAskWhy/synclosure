@@ -45,7 +45,7 @@ def main():
     # If not hardcoded, the BUILD_DIR is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
     BUILD_DIR = sys.path[0]
-    OUTPUT_DIR = sys.path[0]
+    OUTPUT_DIR = sys.path[0] + os.sep + 'output'
 
     EXPORT_PATH = BUILD_DIR + os.sep + APPLICATION_NAME
 
@@ -237,8 +237,10 @@ def main():
         if DEBUG_ON: print compile_command
         os.system(compile_command)
 
-    def build_wix_project(project_file, release_version):
+    def build_wix_project(project_file, release_version, output_dir):
         """Build MSI (Windows Installer) file"""
+
+        if INFO_ON: print '[INFO] Compiling WiX project'
 
         # If this is a dev build, set WiX project version to 0.0.SVNRevision
         # Otherwise, set WiX project version to release_version
@@ -248,33 +250,37 @@ def main():
             msi_version = release_version
 
         candle_cmd_line_vars = "-dMyAppVersion=%s" % (msi_version)
-            
-        output_file_name = "setup_%s_%s.msi" \
+
+        output_file_prefix = "setup_%s_%s" \
             % (APPLICATION_NAME.lower(), release_version)
+
+        # The file extension is not included here as it's included further down
+        output_file_full_path = output_dir + os.sep + output_file_prefix
+
         candle_command = \
-         """candle -nologo "%s" %s -ext "WixUIExtension.dll" -o %s.wixobj""" \
-         % (project_file, candle_cmd_line_vars, output_file_name)
+            """candle -nologo "%s" %s -ext "WixUIExtension.dll" -o "%s.wixobj" """ \
+            % (project_file, candle_cmd_line_vars, output_file_full_path)
 
         light_command = \
-         """light -nologo %s.wixobj -o "%s" -ext "WixUIExtension.dll" """ \
-         % (output_file_name, output_file_name)
+            """light -nologo "%s.wixobj" -o "%s.msi" -ext "WixUIExtension.dll" """ \
+            % (output_file_full_path, output_file_full_path)
 
         if DEBUG_ON: print "candle_command: %s" % candle_command
         if DEBUG_ON: print "light_command: %s" % light_command
 
-        if INFO_ON: print "Calling candle ..."
+        if INFO_ON: print "  * Calling candle ..."
         os.system (candle_command)
 
-        if INFO_ON: print "\nCalling light ..."
+        if INFO_ON: print "\n  * Calling light ..."
         os.system (light_command)
 
-    def cleanup_build_dir(build_dir, EXPORT_PATH, MAX_ATTEMPTS, \
-        cleanup_attempts=0):
+    def cleanup_build_env(EXPORT_PATH, OUTPUT_DIR, MAX_ATTEMPTS, \
+        cleanup_attempts=0, cleanup_error=""):
         """Cleanup build area"""
 
         if cleanup_attempts == MAX_ATTEMPTS:
-            # break or continue?
-            sys.exit("Problems cleaning %s.") % build_dir
+            sys.exit("[ERROR] Problems cleaning build env: %s") % \
+                cleanup_error
 
         if INFO_ON: print "[INFO] Cleaning build directory"
         os.chdir(build_dir)
@@ -288,28 +294,26 @@ def main():
                 # moments and try again until MAX_ATTEMPTS is reached.
                 time.sleep(3)
                 cleanup_attempts += 1
-                cleanup_build_dir(build_dir, EXPORT_PATH, MAX_ATTEMPTS, 
-                    cleanup_attempts)
-        
-        # Cleanup 7z archives
-        for file in glob.glob("*.7z"):
-         os.remove(file)
+                cleanup_error = str(sys.exc_info()[:2])
+                cleanup_build_dir(EXPORT_PATH, OUTPUT_DIR, \
+                    MAX_ATTEMPTS, cleanup_attempts, cleanup_error)
+            else:
+                cleanup_attempts = 0
 
-        # Cleanup WiX related files
-        for file in glob.glob("*.msi"):
-         os.remove(file)
-
-        for file in glob.glob("*.wixpdb"):
-         os.remove(file)
-
-        for file in glob.glob("*.wixobj"):
-         os.remove(file)
-
-
-        try:
-            os.remove("setup_synclosure.exe")
-        except:
-            pass
+        # Remove exported files
+        if os.path.exists(OUTPUT_DIR):
+            try:
+                shutil.rmtree(OUTPUT_DIR)
+            except:
+                # If there are problems removing exported files, wait a few
+                # moments and try again until MAX_ATTEMPTS is reached.
+                time.sleep(3)
+                cleanup_attempts += 1
+                cleanup_error = str(sys.exc_info()[:2])
+                cleanup_build_dir(EXPORT_PATH, OUTPUT_DIR, \
+                    MAX_ATTEMPTS, cleanup_attempts, cleanup_error)
+            else:
+                cleanup_attempts = 0
 
         # Give some time for all file removal requests to be honored.
         time.sleep(3)
@@ -323,7 +327,12 @@ def main():
         (os.path.basename(sys.argv[0]), DATE)
 
     os.chdir(BUILD_DIR)
-    cleanup_build_dir(BUILD_DIR, EXPORT_PATH, MAX_ATTEMPTS)
+    cleanup_build_env(EXPORT_PATH, OUTPUT_DIR, MAX_ATTEMPTS)
+
+    try:
+        os.mkdir(OUTPUT_DIR)
+    except:
+        sys.exit("Unable to create output dir: %s") % OUTPUT_DIR
 
     result = export_svn(SYNCLOSURE_REPO_URL, EXPORT_PATH)
     revision = str(result.number)
@@ -347,7 +356,7 @@ def main():
     update_version_tag_in_files(files_with_placeholder_content, release_version)
 
     # This happens before content is shuffled about for binary packaging
-    create_src_archive(EXPORT_PATH, BUILD_DIR, release_version)
+    create_src_archive(EXPORT_PATH, OUTPUT_DIR, release_version)
 
     compile_python_code(CX_FREEZE_SETUP)
 
@@ -356,12 +365,12 @@ def main():
     update_package_dir(PACKAGE_DIR)
 
     binary_archive_src_dir = EXPORT_PATH + os.sep + "package"
-    create_binary_archive(binary_archive_src_dir, BUILD_DIR, release_version)
+    create_binary_archive(binary_archive_src_dir, OUTPUT_DIR, release_version)
 
     build_innosetup_installer(INNO_SETUP_PROJECT_FILE, release_version, \
         OUTPUT_DIR, revision)
 
-    # build_wix_project(WIX_PROJECT_FILE, release_version)
+    build_wix_project(WIX_PROJECT_FILE, release_version, OUTPUT_DIR)
 
 
 if __name__ == "__main__":
