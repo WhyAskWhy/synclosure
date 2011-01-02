@@ -216,10 +216,20 @@ def main():
 
         if INFO_ON: print '[INFO] Compiling Inno Setup project'
 
-        # iscc /Q /O"%OUTPUT_DIR%" "%BUILD_DIR%\%APPLICATION_NAME%\%APP_ISS_FILE%"
+        # If this is a dev build, set iss_version to 1.0.SVNRevision
+        # Otherwise, set iss_version to release_version
+        if release_version[0:3] == "dev":
+            iss_version = '0.0.' + str(release_version[9:])
+        else:
+            iss_version = release_version
+
+        iscc_cmd_line_vars = \
+            """ /d"VersionInfoVersion=%s" """ % (iss_version)
+
         # Using triple quotes to handle paths with spaces
-        compile_command = """iscc /Q /O"%s" "%s" """ % \
-            (OUTPUT_DIR, project_file)
+        compile_command = \
+            """iscc /Q %s /O"%s" "%s" """ % \
+            (iscc_cmd_line_vars, OUTPUT_DIR, project_file)
 
         if DEBUG_ON: print compile_command
         os.system(compile_command)
@@ -345,7 +355,8 @@ def main():
     binary_archive_src_dir = EXPORT_PATH + os.sep + "package"
     create_binary_archive(binary_archive_src_dir, BUILD_DIR, release_version)
 
-    build_innosetup_installer(INNO_SETUP_PROJECT_FILE, release_version)
+    build_innosetup_installer(INNO_SETUP_PROJECT_FILE, release_version, \
+        OUTPUT_DIR)
 
     # build_wix_project(WIX_PROJECT_FILE, release_version)
 

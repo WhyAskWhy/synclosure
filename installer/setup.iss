@@ -25,7 +25,8 @@
 #define InstallPath "{app}"
 
 ; Version info of the installer itself
-#define VersionInfoVersion "1.0"
+; DEFINED VIA BUILD SCRIPT
+;#define VersionInfoVersion "1.0"
 
 ; Version of the product being installed
 #define VersionInfoProductTextVersion "VERSION_PLACEHOLDER"
