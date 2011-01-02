@@ -205,7 +205,7 @@ def main():
 
         dest_file = dst_dir + os.sep + dest_file
 
-        if INFO_ON: print "Creating source archive of %s" % src_dir
+        if INFO_ON: print "Creating binary archive of %s" % src_dir
         # Max compression, Multi-threading on, Solid archive creation on
         archive_command = """%s -t7z -mx=9 -mmt=on -ms=on a "%s" "%s" """ % \
             (archive_app, dest_file, src_dir)
