@@ -219,7 +219,7 @@ def main():
         # If this is a dev build, set iss_version to 1.0.SVNRevision
         # Otherwise, set iss_version to release_version
         if release_version[0:3] == "dev":
-            iss_version = '0.0.' + str(release_version[9:])
+            iss_version = '1.0.' + str(release_version[9:])
         else:
             iss_version = release_version
 
