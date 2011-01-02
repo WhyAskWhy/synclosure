@@ -25,7 +25,9 @@
     <?define THIS = "THAT"?>
     -->
 
-    <!-- The UpgradeCode should not be changed.  -->
+    <!-- The UpgradeCode should not change unless you want to install 
+         a new product and have the old product remain installed, 
+         that is, both products existing as separate instances.  -->
     <?define MyProductUpgradeCode = "{B1F75719-7BD9-48C2-9760-87E7097D26AD}" ?>
     <?define MyPackageDescription= "$(var.MyAppName) is a RSS aggregator to flexibly download files in enclosures. It supports filter keywords, custom actions and a caching mechanism."?>
     <?define MyPackageComments = "Installs $(var.MyAppVerName) from $(var.MyAppPublisher)." ?>

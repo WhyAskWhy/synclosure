@@ -11,26 +11,20 @@
   The Product element describes the software that's in the installer.
  -->
  
-<!--
-FIXME:
-    * Dynamically set Version number.
-        Thoughts: If dev-svn is found in the version info within build script,
-                  have the build script set the value to 0.0.0.X where X is the
-                  revision number?
--->
-
 <?include setup.wxi ?>
 
-
+    <!-- $(var.MyAppVersion) is set via command-line -->
     <Product
          Id="*"
          Name="$(var.MyAppVerName)"
          Language="1033"
-         Version="1.0.0.0"
+         Version="$(var.MyAppVersion)"
          Manufacturer="$(var.MyAppPublisher)"
          UpgradeCode="$(var.MyProductUpgradeCode)">
 
+         <!-- Package Id HAS to change everytime MSI is built -->
         <Package
+            Id="*"
             InstallerVersion="301"
             Compressed="yes"
             Manufacturer="$(var.MyAppPublisher)"
