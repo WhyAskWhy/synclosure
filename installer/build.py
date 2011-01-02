@@ -211,7 +211,7 @@ def main():
             (archive_app, dest_file, src_dir)
         os.system(archive_command)
 
-    def build_innosetup_installer(project_file, release_version):
+    def build_innosetup_installer(project_file, release_version, OUTPUT_DIR):
         """Produce an Inno Setup installer"""
 
         if INFO_ON: print '[INFO] Compiling Inno Setup project'
