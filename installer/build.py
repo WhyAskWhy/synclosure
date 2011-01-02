@@ -211,17 +211,15 @@ def main():
             (archive_app, dest_file, src_dir)
         os.system(archive_command)
 
-    def build_innosetup_installer(project_file, release_version, OUTPUT_DIR):
+    def build_innosetup_installer(project_file, release_version, OUTPUT_DIR, \
+        revision):
         """Produce an Inno Setup installer"""
 
         if INFO_ON: print '[INFO] Compiling Inno Setup project'
 
-        # If this is a dev build, set iss_version to 1.0.SVNRevision
-        # Otherwise, set iss_version to release_version
-        if release_version[0:3] == "dev":
-            iss_version = '1.0.' + str(release_version[9:])
-        else:
-            iss_version = release_version
+        # Set iss_version to 1.0.SVNRevision
+        # Note: This is the installer file version, NOT Synclosure version.
+        iss_version = '1.0.' + str(revision)
 
         iscc_cmd_line_vars = \
             """ /d"VersionInfoVersion=%s" """ % (iss_version)
@@ -356,7 +354,7 @@ def main():
     create_binary_archive(binary_archive_src_dir, BUILD_DIR, release_version)
 
     build_innosetup_installer(INNO_SETUP_PROJECT_FILE, release_version, \
-        OUTPUT_DIR)
+        OUTPUT_DIR, revision)
 
     # build_wix_project(WIX_PROJECT_FILE, release_version)
 
