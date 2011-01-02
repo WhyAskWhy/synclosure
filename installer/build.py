@@ -227,10 +227,20 @@ def main():
     def build_wix_project(project_file, release_version):
         """Build MSI (Windows Installer) file"""
 
-        output_file_name = "setup_%s" % APPLICATION_NAME.lower()
+        # If this is a dev build, set WiX project version to 0.0.SVNRevision
+        # Otherwise, set WiX project version to release_version
+        if release_version[0:3] == "dev":
+            msi_version = '0.0.' + str(release_version[9:])
+        else:
+            msi_version = release_version
+
+        candle_cmd_line_vars = "-dMyAppVersion=%s" % (msi_version)
+            
+        output_file_name = "setup_%s_%s.msi" \
+            % (APPLICATION_NAME.lower(), release_version)
         candle_command = \
-         """candle -nologo "%s" -ext "WixUIExtension.dll" -o %s.wixobj""" \
-         % (project_file, output_file_name)
+         """candle -nologo "%s" %s -ext "WixUIExtension.dll" -o %s.wixobj""" \
+         % (project_file, candle_cmd_line_vars, output_file_name)
 
         light_command = \
          """light -nologo %s.wixobj -o "%s" -ext "WixUIExtension.dll" """ \
