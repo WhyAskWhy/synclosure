@@ -20,7 +20,8 @@
 
 #define MyAppNameExe "synclosure.exe"
 
-#define InstallerName "setup_synclosure"
+; DEFINED VIA BUILD SCRIPT
+;#define InstallerName "setup_synclosure"
 
 #define InstallPath "{app}"
 

@@ -221,8 +221,13 @@ def main():
         # Note: This is the installer file version, NOT Synclosure version.
         iss_version = '1.0.' + str(revision)
 
+
+        output_file_name = "setup_%s_%s" \
+            % (APPLICATION_NAME.lower(), release_version)
+
         iscc_cmd_line_vars = \
-            """ /d"VersionInfoVersion=%s" """ % (iss_version)
+            """ /d"VersionInfoVersion=%s" /d"InstallerName=%s" """ % \
+            (iss_version, output_file_name)
 
         # Using triple quotes to handle paths with spaces
         compile_command = \
