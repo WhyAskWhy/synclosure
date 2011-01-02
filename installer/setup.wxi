@@ -19,7 +19,7 @@
     <?define MyAppCurrentMaintainer = "Deoren Moor"?>
     <?define MyAppCopyright="Original code and name (C) by raphael balimann, 2004. Modifications (C) $(var.MyAppCopyrightYear) $(var.MyAppCopyrightOwner)"?>
 
-    <?define MyAppLicensePath = "..\licenses\synclosure\license.rtf"?>
+    <?define MyAppLicensePath = "..\package\licenses\synclosure\license.rtf"?>
 
     <!--
     <?define THIS = "THAT"?>
