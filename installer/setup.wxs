@@ -58,11 +58,11 @@
         <!--Components-->
         <DirectoryRef Id="MyProgramDir">
             <Component
-                 Id="CMP_InstallMeTXT"
+                 Id="CMP_ReadMeTXT"
                  Guid="E8A58B7B-F031-4548-9BDD-7A6796C8460D">
                 <File
-                     Id="FILE_InstallMeTXT"
-                     Source="InstallMe.txt" KeyPath="yes" />
+                     Id="FILE_ReadMeTXT"
+                     Source="..\package\docs\readme.txt" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
@@ -75,7 +75,7 @@
                      Id="DocumentationStartMenuShortcut"
                      Name="Documentation"
                      Description="Read $(var.MyAppName) Documentation"
-                     Target="[MyProgramDir]InstallMe.txt" />
+                     Target="[MyProgramDir]docs\readme.txt" />
 
                 <Shortcut
                      Id="UninstallShortcut"
@@ -103,7 +103,7 @@
         <!--Features-->
         <Feature
              Id="ProductFeature" Title="Main Product" Level="1">
-            <ComponentRef Id="CMP_InstallMeTXT" />
+            <ComponentRef Id="CMP_ReadMeTXT" />
             <ComponentRef Id="CMP_DocumentationShortcut" />
         </Feature>
 
