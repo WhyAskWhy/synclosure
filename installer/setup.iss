@@ -140,7 +140,7 @@ begin
  { If they say no, then Inno Setup keeps it per the 'uninsneveruninstall' flag.}
   if CurUninstallStep = usUninstall then 
   begin
-   if MsgBox(ExpandConstant('{cm:removemsg}'), mbConfirmation, MB_YESNO)=IDYES then
+   if MsgBox(ExpandConstant('{cm:removemsg}'), mbConfirmation, MB_YESNO)=IDNO then
      begin
       DeleteFile(ExpandConstant('{#InstallPath}'+'\sources.ini'));
      end;
