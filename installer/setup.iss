@@ -97,6 +97,9 @@ LicenseFile=..\package\licenses\synclosure\LICENSE.txt
 [Messages]
 BeveledLabel={#MyAppVerName} - {#MyAppSupportURL}
 
+[CustomMessages]
+removemsg=Do you wish to keep sources.ini?
+
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
@@ -126,5 +129,20 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 ; The 'package' dir will be created during the build phase.
 Source: "..\package\*"; DestDir: "{#InstallPath}"; Excludes: "\.svn"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\package\sources.ini"; DestDir: "{#InstallPath}"; Flags: uninsneveruninstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
+
+[Code]
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+ { Ask user if they wish to keep sources.ini. If they say yes, then remove it. }
+ { If they say no, then Inno Setup keeps it per the 'uninsneveruninstall' flag.}
+  if CurUninstallStep = usUninstall then 
+  begin
+   if MsgBox(ExpandConstant('{cm:removemsg}'), mbConfirmation, MB_YESNO)=IDYES then
+     begin
+      DeleteFile(ExpandConstant('{#InstallPath}'+'\sources.ini'), True, True, True);
+     end;
+ end;
+end;
