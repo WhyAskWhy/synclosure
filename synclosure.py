@@ -11,6 +11,7 @@ Synclosure automatically downloads files found in RSS enclosures.
 # Built-in modules
 import sys
 import os
+import os.path
 import urllib2
 import ConfigParser
 
@@ -54,9 +55,15 @@ def main():
 
     feedlist, enclosures, oldenclosures, nl = [], [], [], '\n'
 
+    # Has the script been "wrapped" into an executable?
+    if hasattr(sys, "frozen"):
+        config_path = os.path.split(sys.executable)[0]
+    else:
+        config_path = sys.path[0]
+
     #OptParse is a pain, so as of now i'm sticking to that custom format
-    configfile = sys.path[0] + os.sep + 'sources.ini'
-    cache = sys.path[0] + os.sep + 'cache.ini'
+    configfile = config_path + os.sep + 'sources.ini'
+    cache = config_path + os.sep + 'cache.ini'
     
     # Should content be placed within a subfolder? (True/False)
     # Each subfolder's name is created from the title of the feed being parsed.
