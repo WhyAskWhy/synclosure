@@ -38,10 +38,6 @@ def main():
     SOURCES_DIST = 'sources.dist.ini'
     SOURCES_PRODUCTION = 'sources.ini'
 
-    # Maximum amount of attempts that the cleanup function will attempt
-    # to remove the export directory, etc.
-    MAX_ATTEMPTS = 3
-
     # If not hardcoded, the BUILD_DIR is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
     BUILD_DIR = sys.path[0]
@@ -52,6 +48,15 @@ def main():
     # The contents included within the installer
     PACKAGE_DIR = EXPORT_PATH + os.sep + 'package'
     DATE = datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
+
+    # Maximum amount of attempts that the cleanup function will attempt
+    # to remove a directory.
+    MAX_ATTEMPTS = 3
+
+    DIRS_TO_REMOVE_DURING_CLEANUP = [
+        EXPORT_PATH,
+        OUTPUT_DIR,
+    ]
 
     # #####################
     # Project Files
@@ -274,7 +279,7 @@ def main():
         if INFO_ON: print "\n  * Calling light ..."
         os.system (light_command)
 
-    def cleanup_build_env(EXPORT_PATH, OUTPUT_DIR, MAX_ATTEMPTS, \
+    def cleanup_build_env(dirs_to_remove, BUILD_DIR, MAX_ATTEMPTS, \
         cleanup_attempts=0, cleanup_error=""):
         """Cleanup build area"""
 
@@ -283,37 +288,23 @@ def main():
                 cleanup_error
 
         if INFO_ON: print "[INFO] Cleaning build directory"
-        os.chdir(build_dir)
+        os.chdir(BUILD_DIR)
 
-        # Remove exported files
-        if os.path.exists(EXPORT_PATH):
-            try:
-                shutil.rmtree(EXPORT_PATH)
-            except:
-                # If there are problems removing exported files, wait a few
-                # moments and try again until MAX_ATTEMPTS is reached.
-                time.sleep(3)
-                cleanup_attempts += 1
-                cleanup_error = str(sys.exc_info()[:2])
-                cleanup_build_dir(EXPORT_PATH, OUTPUT_DIR, \
-                    MAX_ATTEMPTS, cleanup_attempts, cleanup_error)
-            else:
-                cleanup_attempts = 0
-
-        # Remove exported files
-        if os.path.exists(OUTPUT_DIR):
-            try:
-                shutil.rmtree(OUTPUT_DIR)
-            except:
-                # If there are problems removing exported files, wait a few
-                # moments and try again until MAX_ATTEMPTS is reached.
-                time.sleep(3)
-                cleanup_attempts += 1
-                cleanup_error = str(sys.exc_info()[:2])
-                cleanup_build_dir(EXPORT_PATH, OUTPUT_DIR, \
-                    MAX_ATTEMPTS, cleanup_attempts, cleanup_error)
-            else:
-                cleanup_attempts = 0
+        for dir in dirs_to_remove:
+            if os.path.exists(dir):
+                if DEBUG_ON: print "  * [DEBUG] Attempting to remove %s" % dir
+                try:
+                    shutil.rmtree(dir)
+                except:
+                    # If there are problems removing exported files, wait a few
+                    # moments and try again until MAX_ATTEMPTS is reached.
+                    time.sleep(3)
+                    cleanup_attempts += 1
+                    cleanup_error = str(sys.exc_info()[:2])
+                    cleanup_build_dir(dir, OUTPUT_DIR, \
+                        MAX_ATTEMPTS, cleanup_attempts, cleanup_error)
+                else:
+                    cleanup_attempts = 0
 
         # Give some time for all file removal requests to be honored.
         time.sleep(3)
@@ -326,8 +317,7 @@ def main():
     if INFO_ON: print "[INFO] Starting %s (%s) " % \
         (os.path.basename(sys.argv[0]), DATE)
 
-    os.chdir(BUILD_DIR)
-    cleanup_build_env(EXPORT_PATH, OUTPUT_DIR, MAX_ATTEMPTS)
+    cleanup_build_env(DIRS_TO_REMOVE_DURING_CLEANUP, BUILD_DIR, MAX_ATTEMPTS)
 
     try:
         os.mkdir(OUTPUT_DIR)
