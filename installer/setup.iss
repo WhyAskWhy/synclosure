@@ -142,7 +142,7 @@ begin
   begin
    if MsgBox(ExpandConstant('{cm:removemsg}'), mbConfirmation, MB_YESNO)=IDYES then
      begin
-      DeleteFile(ExpandConstant('{#InstallPath}'+'\sources.ini'), True, True, True);
+      DeleteFile(ExpandConstant('{#InstallPath}'+'\sources.ini'));
      end;
  end;
 end;
