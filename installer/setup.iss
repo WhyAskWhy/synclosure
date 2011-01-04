@@ -136,13 +136,13 @@ Source: "..\package\sources.ini"; DestDir: "{#InstallPath}"; Flags: uninsneverun
 [Code]
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
- { Ask user if they wish to keep sources.ini. If they say yes, then remove it. }
- { If they say no, then Inno Setup keeps it per the 'uninsneveruninstall' flag.}
-  if CurUninstallStep = usUninstall then 
-  begin
-   if MsgBox(ExpandConstant('{cm:removemsg}'), mbConfirmation, MB_YESNO)=IDNO then
-     begin
-      DeleteFile(ExpandConstant('{#InstallPath}'+'\sources.ini'));
-     end;
- end;
+    { Ask user if they wish to keep sources.ini. If they say yes, then remove it. }
+    { If they say no, then Inno Setup keeps it per the 'uninsneveruninstall' flag.}
+    if CurUninstallStep = usUninstall then 
+        begin
+            if MsgBox(ExpandConstant('{cm:removemsg}'), mbConfirmation, MB_YESNO)=IDNO then
+            begin
+                DeleteFile(ExpandConstant('{#InstallPath}'+'\sources.ini'));
+            end;
+        end;
 end;
