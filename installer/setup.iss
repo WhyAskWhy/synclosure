@@ -128,8 +128,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 ; The 'package' dir will be created during the build phase.
-Source: "..\package\*"; DestDir: "{#InstallPath}"; Excludes: "\.svn"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\package\sources.ini"; DestDir: "{#InstallPath}"; Flags: uninsneveruninstall
+Source: "..\package\*"; DestDir: "{#InstallPath}"; Excludes: "\.svn,sources.ini"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\package\sources.ini"; DestDir: "{#InstallPath}"; Flags: uninsneveruninstall onlyifdoesntexist   
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 
