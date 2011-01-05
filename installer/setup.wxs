@@ -4,7 +4,8 @@
     $HeadURL$
 -->
 
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
 <!--
   The Package element describes the installer (summary properties for the MSI).
@@ -50,13 +51,16 @@
                 <Directory
                      Id="MyAppPublisherDir" Name="$(var.MyAppPublisher)" />
                     <Directory
-                         Id="MyProgramDir" Name="$(var.MyAppVerName)" />
+                         Id="MyProgramDir" Name="$(var.MyAppName)" />
 
                 <Directory Id="ProgramMenuFolder">
+                <!-- Error LGHT0204: 
+                ICE64: The directory MyPubShortcutsDir is in the user 
+                profile but is not listed in the RemoveFile table. -->
                     <Directory
                          Id="MyPubShortcutsDir" Name="$(var.MyAppPublisher)" />
                         <Directory
-                             Id="MyShortcutsDir" Name="$(var.MyAppVerName)" />
+                             Id="MyShortcutsDir" Name="$(var.MyAppName)" />
                 </Directory>
             </Directory>
         </Directory>
@@ -90,6 +94,14 @@ Name: "{commondesktop}\{#MyAppName}";Filename: "{#InstallPath}";IconFilename: "{
                      Name="Documentation"
                      Description="Read $(var.MyAppName) Documentation"
                      Target="[MyProgramDir]docs\readme.txt" />
+
+                <util:InternetShortcut Id="OnlineDocumentationShortcut"
+                    Name="Documentation"
+                    Target="$(var.MyAppSupportURL)"/>
+
+                <util:InternetShortcut Id="HomepageShortcut"
+                    Name="Homepage"
+                    Target="$(var.MyAppHomePage)"/>
 
                 <Shortcut
                      Id="UninstallShortcut"

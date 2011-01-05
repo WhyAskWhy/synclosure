@@ -14,6 +14,7 @@
     <?define MyAppVerName = "$(var.MyAppName) VERSION_PLACEHOLDER"?>
     <?define MyAppRegistry = "Software\$(var.MyAppPublisher)\$(var.MyAppName)"?>
     <?define MyAppSupportURL = "http://projects.whyaskwhy.org/projects/synclosure/wiki/"?>
+    <?define MyAppHomePage = "http://projects.whyaskwhy.org/projects/synclosure"?>
     <?define MyAppCopyrightOwner = "WhyAskWhy.org"?>
     <?define MyAppCopyrightYear = "2007"?>
     <?define MyAppCurrentMaintainer = "Deoren Moor"?>
