@@ -46,11 +46,17 @@
         <!--Directory structure-->
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
+
                 <Directory
-                     Id="MyProgramDir" Name="$(var.MyAppPublisher)" />
+                     Id="MyAppPublisherDir" Name="$(var.MyAppPublisher)" />
+                    <Directory
+                         Id="MyProgramDir" Name="$(var.MyAppVerName)" />
+
                 <Directory Id="ProgramMenuFolder">
                     <Directory
-                         Id="MyShortcutsDir" Name="$(var.MyAppPublisher)" />
+                         Id="MyPubShortcutsDir" Name="$(var.MyAppPublisher)" />
+                        <Directory
+                             Id="MyShortcutsDir" Name="$(var.MyAppVerName)" />
                 </Directory>
             </Directory>
         </Directory>
@@ -65,7 +71,15 @@
                      Source="..\package\docs\readme.txt" KeyPath="yes" />
             </Component>
         </DirectoryRef>
+<!--
+Inno Setup installer shortcuts: App, Readme, WebLinks and Desktop.
 
+Name: "{group}\{#MyAppName}"; Filename: "{#InstallPath}"; IconFilename: "{#ShortcutIcon}"; WorkingDir: "{#InstallPath}";
+Name: "{group}\Documents\Readme (txt)"; Filename: "{#InstallPath}\docs\readme.txt";
+Name: "{group}\Documents\Web\Homepage"; Filename: "{#MyAppURL}";
+Name: "{group}\Documents\Web\Documentation"; Filename: "{#MyAppWikiURL}";
+Name: "{commondesktop}\{#MyAppName}";Filename: "{#InstallPath}";IconFilename: "{#ShortcutIcon}";WorkingDir: "{#InstallPath}";Tasks: desktopicon;
+-->
         <!--Start Menu Shortcuts-->
         <DirectoryRef Id="MyShortcutsDir">
             <Component Id="CMP_DocumentationShortcut"
