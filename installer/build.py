@@ -256,6 +256,9 @@ def main():
 
         candle_cmd_line_vars = "-dMyAppVersion=%s" % (msi_version)
 
+        wix_extensions = """-ext "%s" -ext "%s" """ \
+            % ('UtilExtension.dll', 'WixUIExtension.dll')
+
         output_file_prefix = "setup_%s_%s" \
             % (APPLICATION_NAME.lower(), release_version)
 
@@ -263,12 +266,12 @@ def main():
         output_file_full_path = output_dir + os.sep + output_file_prefix
 
         candle_command = \
-            """candle -nologo "%s" %s -ext "WixUIExtension.dll" -o "%s.wixobj" """ \
-            % (project_file, candle_cmd_line_vars, output_file_full_path)
+            """candle -nologo "%s" "%s" "%s" -o "%s.wixobj" """ \
+            % (project_file, candle_cmd_line_vars, wix_extensions, output_file_full_path)
 
         light_command = \
-            """light -nologo "%s.wixobj" -o "%s.msi" -ext "WixUIExtension.dll" """ \
-            % (output_file_full_path, output_file_full_path)
+            """light -nologo "%s.wixobj" -o "%s.msi" "%s" """ \
+            % (output_file_full_path, output_file_full_path, wix_extensions)
 
         if DEBUG_ON: print "candle_command: %s" % candle_command
         if DEBUG_ON: print "light_command: %s" % light_command
