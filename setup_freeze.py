@@ -1,6 +1,11 @@
 # $Id$
 # $HeadURL$
 
+# Docs:
+# http://cx-freeze.sourceforge.net/cx_Freeze.html
+# http://wiki.wxpython.org/cx_freeze
+# http://wiki.wxpython.org/CreatingStandaloneExecutables
+
 from cx_Freeze import setup, Executable
 import os
 
