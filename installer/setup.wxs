@@ -34,7 +34,7 @@
 
         <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
-        <Icon Id="MyAppIcon" SourceFile="synclosure.ico" />
+        <Icon Id="MyAppIcon" SourceFile="$(var.MyAppIconPath)" />
 
         <!--Setting properties-->
         <Property Id="ARPPRODUCTICON" Value="MyAppIcon" />
@@ -49,59 +49,52 @@
             <Directory Id="ProgramFilesFolder">
 
                 <Directory
-                     Id="MyAppPublisherDir" Name="$(var.MyAppPublisher)" />
+                     Id="MyAppPublisherDir" Name="$(var.MyAppPublisher)" >
                     <Directory
                          Id="MyProgramDir" Name="$(var.MyAppName)" />
-
-                <Directory Id="ProgramMenuFolder">
-                <!-- Error LGHT0204: 
-                ICE64: The directory MyPubShortcutsDir is in the user 
-                profile but is not listed in the RemoveFile table. -->
-                    <Directory
-                         Id="MyPubShortcutsDir" Name="$(var.MyAppPublisher)" />
-                        <Directory
-                             Id="MyShortcutsDir" Name="$(var.MyAppName)" />
                 </Directory>
             </Directory>
+
+            <Directory Id="ProgramMenuFolder">
+            <!-- Error LGHT0204: 
+            ICE64: The directory MyPubShortcutsDir is in the user 
+            profile but is not listed in the RemoveFile table. -->
+                <Directory
+                     Id="MyPubShortcutsDir" Name="$(var.MyAppPublisher)" >
+                    <Directory
+                         Id="MyShortcutsDir" Name="$(var.MyAppName)" >
+                        <Directory
+                            Id="MyShortcutWebLinksDir" Name="Web" />
+                    </Directory>
+                </Directory>
+            </Directory>
+
         </Directory>
 
         <!--Components-->
         <DirectoryRef Id="MyProgramDir">
             <Component
                  Id="CMP_ReadMeTXT"
-                 Guid="E8A58B7B-F031-4548-9BDD-7A6796C8460D">
+                 Guid="*">
                 <File
                      Id="FILE_ReadMeTXT"
-                     Source="..\package\docs\readme.txt" KeyPath="yes" />
+                     Source="$(var.MyAppReadMePath)" KeyPath="yes" />
             </Component>
         </DirectoryRef>
-<!--
-Inno Setup installer shortcuts: App, Readme, WebLinks and Desktop.
 
-Name: "{group}\{#MyAppName}"; Filename: "{#InstallPath}"; IconFilename: "{#ShortcutIcon}"; WorkingDir: "{#InstallPath}";
-Name: "{group}\Documents\Readme (txt)"; Filename: "{#InstallPath}\docs\readme.txt";
-Name: "{group}\Documents\Web\Homepage"; Filename: "{#MyAppURL}";
-Name: "{group}\Documents\Web\Documentation"; Filename: "{#MyAppWikiURL}";
-Name: "{commondesktop}\{#MyAppName}";Filename: "{#InstallPath}";IconFilename: "{#ShortcutIcon}";WorkingDir: "{#InstallPath}";Tasks: desktopicon;
--->
+        <!-- ISS Shortcuts: App, Readme, WebLinks and Desktop.
+              TODO: Add option for Desktop shortcut -->
+
         <!--Start Menu Shortcuts-->
         <DirectoryRef Id="MyShortcutsDir">
-            <Component Id="CMP_DocumentationShortcut"
-                 Guid="33741C82-30BF-41AF-8246-44A5DCFCF953">
+            <Component Id="CMP_DocumentationShortcuts"
+                 Guid="*">
 
                 <Shortcut
                      Id="DocumentationStartMenuShortcut"
                      Name="Documentation"
                      Description="Read $(var.MyAppName) Documentation"
-                     Target="[MyProgramDir]docs\readme.txt" />
-
-                <util:InternetShortcut Id="OnlineDocumentationShortcut"
-                    Name="Documentation"
-                    Target="$(var.MyAppSupportURL)"/>
-
-                <util:InternetShortcut Id="HomepageShortcut"
-                    Name="Homepage"
-                    Target="$(var.MyAppHomePage)"/>
+                     Target="[MyProgramDir]readme.txt" />
 
                 <Shortcut
                      Id="UninstallShortcut"
@@ -113,7 +106,7 @@ Name: "{commondesktop}\{#MyAppName}";Filename: "{#InstallPath}";IconFilename: "{
                 <RemoveFolder
                      Id="RemoveMyShortcutsDir" On="uninstall" />
 
-                <!-- ICE38: Component CMP_DocumentationShortcut installs
+                <!-- ICE38: Component CMP_DocumentationShortcuts installs
                 to user profile. It must use a registry key under
                 HKCU as its KeyPath, not a file. -->
                 <RegistryValue
@@ -126,11 +119,35 @@ Name: "{commondesktop}\{#MyAppName}";Filename: "{#InstallPath}";IconFilename: "{
             </Component>
         </DirectoryRef>
 
+        <!-- Start Menu Shortcuts for Web Resources -->
+        <DirectoryRef Id="MyShortcutWebLinksDir">
+            <Component Id="CMP_MyShortcutWebLinksDir" 
+                       Guid="*">
+
+                <util:InternetShortcut Id="OnlineDocumentationShortcut"
+                    Name="Documentation"
+                    Target="$(var.MyAppSupportURL)"/>
+
+                <util:InternetShortcut Id="HomepageShortcut"
+                    Name="Homepage"
+                    Target="$(var.MyAppHomePage)"/>
+
+                <RegistryValue
+                     Root="HKCU"
+                     Key="$(var.MyAppRegistry)"
+                     Name="web_shortcuts"
+                     Type="integer"
+                     Value="1"
+                     KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
         <!--Features-->
         <Feature
              Id="ProductFeature" Title="Main Product" Level="1">
             <ComponentRef Id="CMP_ReadMeTXT" />
-            <ComponentRef Id="CMP_DocumentationShortcut" />
+            <ComponentRef Id="CMP_DocumentationShortcuts" />
+            <ComponentRef Id="CMP_MyShortcutWebLinksDir" />
         </Feature>
 
         <!--User Interface-->

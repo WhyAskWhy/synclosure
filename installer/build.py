@@ -242,8 +242,11 @@ def main():
         if DEBUG_ON: print compile_command
         os.system(compile_command)
 
-    def build_wix_project(project_file, release_version, output_dir):
+    def build_wix_project(src_files, project_file, release_version, \
+        output_dir):
         """Build MSI (Windows Installer) file"""
+
+        os.chgdir(src_files)
 
         if INFO_ON: print '[INFO] Compiling WiX project'
 
@@ -357,13 +360,13 @@ def main():
 
     update_package_dir(PACKAGE_DIR)
 
-    binary_archive_src_dir = EXPORT_PATH + os.sep + "package"
-    create_binary_archive(binary_archive_src_dir, OUTPUT_DIR, release_version)
+    create_binary_archive(PACKAGE_DIR, OUTPUT_DIR, release_version)
 
     build_innosetup_installer(INNO_SETUP_PROJECT_FILE, release_version, \
         OUTPUT_DIR, revision)
 
-    build_wix_project(WIX_PROJECT_FILE, release_version, OUTPUT_DIR)
+    build_wix_project(PACKAGE_DIR, WIX_PROJECT_FILE, release_version, \
+        OUTPUT_DIR)
 
 
 if __name__ == "__main__":
