@@ -3,9 +3,16 @@
 
 from cx_Freeze import setup, Executable
 
+release_version = "VERSION_PLACEHOLDER"
+
+if release_version[0:3] == "dev":
+    exe_version = '0.0.' + str(release_version[9:])
+else:
+    exe_version = release_version
+
 setup(
     name = "Synclosure",
-    version = "VERSION_PLACEHOLDER",
+    version = exe_version,
     author='TBD',
     url='http://projects.whyaskwhy.org/projects/synclosure/',
     description = "Synclosure is a RSS aggregator to flexibly download " \
