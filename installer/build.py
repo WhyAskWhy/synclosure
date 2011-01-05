@@ -257,7 +257,7 @@ def main():
         candle_cmd_line_vars = "-dMyAppVersion=%s" % (msi_version)
 
         wix_extensions = """-ext "%s" -ext "%s" """ \
-            % ('UtilExtension.dll', 'WixUIExtension.dll')
+            % ('WiXUtilExtension.dll', 'WixUIExtension.dll')
 
         output_file_prefix = "setup_%s_%s" \
             % (APPLICATION_NAME.lower(), release_version)
