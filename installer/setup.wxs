@@ -38,6 +38,19 @@
             Description="$(var.MyPackageDescription)"
             Comments="$(var.MyPackageComments)" />
 
+        <!-- Major upgrade, "Replacing Ourselves" -->
+        <!-- http://www.tramontana.co.hu/wix/lesson4.php#4.2 -->
+        <Upgrade Id="$(var.MyProductUpgradeCode)">
+            <UpgradeVersion 
+                OnlyDetect='no' Property='PREVIOUSFOUND'
+                Minimum='0.3.0' IncludeMinimum='yes'
+                Maximum='$(var.MyAppVersion)' IncludeMaximum='no' />
+        </Upgrade>
+
+        <InstallExecuteSequence>
+            <RemoveExistingProducts After="InstallValidate" />
+        </InstallExecuteSequence>
+
         <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
         <Icon Id="MyAppIcon" SourceFile="$(var.MyAppIconPath)" />
