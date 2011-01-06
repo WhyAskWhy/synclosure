@@ -43,7 +43,7 @@
         <Upgrade Id="$(var.MyProductUpgradeCode)">
             <UpgradeVersion 
                 OnlyDetect='no' Property='PREVIOUSFOUND'
-                Minimum='0.2.0' IncludeMinimum='yes'
+                Minimum='0.0.1' IncludeMinimum='yes'
                 Maximum='$(var.MyAppVersion)' IncludeMaximum='no' />
         </Upgrade>
 
