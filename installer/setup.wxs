@@ -75,7 +75,7 @@
         <DirectoryRef Id="MyProgramDir">
             <Component
                  Id="CMP_ReadMeTXT"
-                 Guid="*">
+                 Guid="{39D96221-737B-4FC0-B195-16D80ED03AD5}">
                 <File
                      Id="FILE_ReadMeTXT"
                      Source="$(var.MyAppReadMePath)" KeyPath="yes" />
@@ -86,9 +86,27 @@
               TODO: Add option for Desktop shortcut -->
 
         <!--Start Menu Shortcuts-->
+        <DirectoryRef Id="MyPubShortcutsDir">
+            <Component 
+                Id="CMP_MyPubShortcutsDir" 
+                Guid="{3CA39401-DA6C-4CB4-8EC8-8954F451C706}">
+               <!-- Root folder for our shortcuts on Start Menu -->
+                <RemoveFolder
+                     Id="RemoveMyPubShortcutsDir" On="uninstall" />
+
+                 <RegistryValue
+                     Root="HKCU"
+                     Key="$(var.MyAppRegistry)"
+                     Name="installed"
+                     Type="integer"
+                     Value="1"
+                     KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
         <DirectoryRef Id="MyShortcutsDir">
             <Component Id="CMP_DocumentationShortcuts"
-                 Guid="*">
+                 Guid="{B5197DC0-F25C-40A3-A8BC-B91BAD6A0905}">
 
                 <Shortcut
                      Id="DocumentationStartMenuShortcut"
@@ -122,7 +140,7 @@
         <!-- Start Menu Shortcuts for Web Resources -->
         <DirectoryRef Id="MyShortcutWebLinksDir">
             <Component Id="CMP_MyShortcutWebLinksDir" 
-                       Guid="*">
+                       Guid="{2779B8A5-B7AB-42A7-B185-5ED43109933E}">
 
                 <util:InternetShortcut Id="OnlineDocumentationShortcut"
                     Name="Documentation"
@@ -135,16 +153,20 @@
                 <RegistryValue
                      Root="HKCU"
                      Key="$(var.MyAppRegistry)"
-                     Name="web_shortcuts"
+                     Name="installed"
                      Type="integer"
                      Value="1"
                      KeyPath="yes" />
+
+                <RemoveFolder
+                    Id="RemoveMyShortcutWebLinksDir" On="uninstall" />
             </Component>
         </DirectoryRef>
 
         <!--Features-->
         <Feature
              Id="ProductFeature" Title="Main Product" Level="1">
+            <ComponentRef Id="CMP_MyPubShortcutsDir" />
             <ComponentRef Id="CMP_ReadMeTXT" />
             <ComponentRef Id="CMP_DocumentationShortcuts" />
             <ComponentRef Id="CMP_MyShortcutWebLinksDir" />
