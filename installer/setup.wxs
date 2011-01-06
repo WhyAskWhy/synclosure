@@ -8,10 +8,16 @@
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
 <!--
-  The Package element describes the installer (summary properties for the MSI).
-  The Product element describes the software that's in the installer.
- -->
- 
+  Notes:
+
+  * The Package element describes the installer (summary properties for the MSI).
+  * The Product element describes the software that's in the installer.
+
+  * Components that install to a user profile must use a registry key under
+    HKCU as its KeyPath, not a file.
+  
+-->
+
 <?include setup.wxi ?>
 
     <!-- $(var.MyAppVersion) is set via command-line -->
@@ -56,9 +62,6 @@
             </Directory>
 
             <Directory Id="ProgramMenuFolder">
-            <!-- Error LGHT0204: 
-            ICE64: The directory MyPubShortcutsDir is in the user 
-            profile but is not listed in the RemoveFile table. -->
                 <Directory
                      Id="MyPubShortcutsDir" Name="$(var.MyAppPublisher)" >
                     <Directory
@@ -68,7 +71,6 @@
                     </Directory>
                 </Directory>
             </Directory>
-
         </Directory>
 
         <!--Components-->
@@ -86,24 +88,6 @@
               TODO: Add option for Desktop shortcut -->
 
         <!--Start Menu Shortcuts-->
-        <DirectoryRef Id="MyPubShortcutsDir">
-            <Component 
-                Id="CMP_MyPubShortcutsDir" 
-                Guid="{3CA39401-DA6C-4CB4-8EC8-8954F451C706}">
-               <!-- Root folder for our shortcuts on Start Menu -->
-                <RemoveFolder
-                     Id="RemoveMyPubShortcutsDir" On="uninstall" />
-
-                 <RegistryValue
-                     Root="HKCU"
-                     Key="$(var.MyAppRegistry)"
-                     Name="installed"
-                     Type="integer"
-                     Value="1"
-                     KeyPath="yes" />
-            </Component>
-        </DirectoryRef>
-
         <DirectoryRef Id="MyShortcutsDir">
             <Component Id="CMP_DocumentationShortcuts"
                  Guid="{B5197DC0-F25C-40A3-A8BC-B91BAD6A0905}">
@@ -124,9 +108,12 @@
                 <RemoveFolder
                      Id="RemoveMyShortcutsDir" On="uninstall" />
 
-                <!-- ICE38: Component CMP_DocumentationShortcuts installs
-                to user profile. It must use a registry key under
-                HKCU as its KeyPath, not a file. -->
+                <!-- Remove top level App Shortcut dir (Publisher) without
+                     requiring a separate Component -->
+                <RemoveFolder
+                     Id="RemoveMyPubShortcutsDir"
+                     Directory="MyPubShortcutsDir" On="uninstall" />
+
                 <RegistryValue
                      Root="HKCU"
                      Key="$(var.MyAppRegistry)"
@@ -166,7 +153,6 @@
         <!--Features-->
         <Feature
              Id="ProductFeature" Title="Main Product" Level="1">
-            <ComponentRef Id="CMP_MyPubShortcutsDir" />
             <ComponentRef Id="CMP_ReadMeTXT" />
             <ComponentRef Id="CMP_DocumentationShortcuts" />
             <ComponentRef Id="CMP_MyShortcutWebLinksDir" />
