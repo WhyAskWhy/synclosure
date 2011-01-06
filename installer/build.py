@@ -246,7 +246,7 @@ def main():
         output_dir):
         """Build MSI (Windows Installer) file"""
 
-        os.chgdir(src_files)
+        os.chdir(src_files)
 
         if INFO_ON: print '[INFO] Compiling WiX project'
 
