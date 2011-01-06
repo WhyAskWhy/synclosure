@@ -70,8 +70,10 @@
                 <Directory
                      Id="MyAppPublisherDir" Name="$(var.MyAppPublisher)" >
                     <Directory
-                         Id="MyProgramDir" Name="$(var.MyAppName)" />
+                         Id="MYPROGRAMDIR" Name="$(var.MyAppName)" />
                 </Directory>
+
+            <Directory Id="DesktopFolder" Name="Desktop"/>
             </Directory>
 
             <Directory Id="ProgramMenuFolder">
@@ -87,7 +89,7 @@
         </Directory>
 
         <!--Components-->
-        <DirectoryRef Id="MyProgramDir">
+        <DirectoryRef Id="MYPROGRAMDIR">
             <Component
                  Id="CMP_ReadMeTXT"
                  Guid="{39D96221-737B-4FC0-B195-16D80ED03AD5}">
@@ -109,7 +111,7 @@
                      Id="DocumentationStartMenuShortcut"
                      Name="Documentation"
                      Description="Read $(var.MyAppName) Documentation"
-                     Target="[MyProgramDir]readme.txt" />
+                     Target="[MYPROGRAMDIR]readme.txt" />
 
                 <Shortcut
                      Id="UninstallShortcut"
@@ -163,20 +165,50 @@
             </Component>
         </DirectoryRef>
 
+        <!-- Desktop Shortcut -->
+        <DirectoryRef Id="DesktopFolder">
+            <Component Id="CMP_MyAppDesktopShortcut" 
+                       Guid="{0006EC13-99F7-4378-AE8C-BFC3983AB95E}">
+
+                <!-- FIXME: This is a stub entry -->
+                <Shortcut
+                     Id="MyAppShortcut"
+                     Name="$(var.MyAppName)"
+                     Description="$(var.MyPackageDescription)"
+                     Target="[MYPROGRAMDIR]readme.txt" />
+
+                <RegistryValue
+                     Root="HKCU"
+                     Key="$(var.MyAppRegistry)"
+                     Name="installed"
+                     Type="integer"
+                     Value="1"
+                     KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
         <!--Features-->
         <Feature
-             Id="ProductFeature" Title="Main Product" Level="1">
+             Id="MainProduct" Title="Main Product" Display="hidden" Level="1">
             <ComponentRef Id="CMP_ReadMeTXT" />
+        </Feature>
+
+        <Feature
+             Id="StartMenuShortcuts" Title="Start Menu Shortcuts" Level="1">
             <ComponentRef Id="CMP_DocumentationShortcuts" />
             <ComponentRef Id="CMP_MyShortcutWebLinksDir" />
         </Feature>
 
+        <Feature
+             Id="DesktopShortcut" Title="Desktop Shortcut" Level="1">
+            <ComponentRef Id="CMP_MyAppDesktopShortcut" />
+        </Feature>
+
         <!--User Interface-->
-        <!-- FIXME: Read http://www.tramontana.co.hu/wix/lesson2.php#2.2 -->
-        <UIRef Id="WixUI_Minimal" />
-        <WixVariable
-            Id="WixUILicenseRtf"
-            Value="$(var.MyAppLicensePath)" />
+        <!-- http://www.tramontana.co.hu/wix/lesson2.php#2.3 -->
+        <UIRef Id="WixUI_InstallDir" />
+        <Property Id="WIXUI_INSTALLDIR" Value="MYPROGRAMDIR" />
+        <WixVariable Id="WixUILicenseRtf" Value="$(var.MyAppLicensePath)" />
 
     </Product>
 </Wix>
