@@ -36,7 +36,7 @@ def main():
     INSTALLED_PYTHON_VERSION='2.7'
     ICON_FILE = 'synclosure.ico'
     SOURCES_DIST = 'sources.dist.ini'
-    SOURCES_PRODUCTION = 'sources.ini'
+    SOURCES_DEST = 'sources.example.ini'
 
     # If not hardcoded, the BUILD_DIR is the path where this script is located,
     # not where it's run from. Use os.getcwd() instead if that is your goal.
@@ -128,6 +128,7 @@ def main():
                 print "The result of the Python code compile is: %s" % result
 
 
+    # FIXME: Function references several 'CONSTANTS' without them being passed.
     def update_package_dir(PACKAGE_DIR):
         """Moves content to be installed into package dir"""
 
@@ -145,26 +146,13 @@ def main():
             os.rename(EXPORT_PATH + os.sep + 'licenses', PACKAGE_DIR \
                 + os.sep + 'licenses')
 
-            # Move sources.ini to 'package' dir.
-            os.rename(EXPORT_PATH + os.sep + 'sources.ini', PACKAGE_DIR \
-                + os.sep + 'sources.ini')
+            # Move sources.ini to 'package' dir as an example file.
+            os.rename(EXPORT_PATH + os.sep + 'sources.dist.ini', PACKAGE_DIR \
+                + os.sep + 'sources.example.ini')
 
             # Get a copy of the icon
             shutil.copyfile(EXPORT_PATH + os.sep + 'installer' + os.sep \
                 + ICON_FILE, PACKAGE_DIR + os.sep + ICON_FILE)
-
-    def update_dist_files(dist_file, production_file):
-        """Renames example files so they can be used"""
-
-        # Reset variables to full path to files
-        production_file = EXPORT_PATH + os.sep + production_file
-        dist_file = EXPORT_PATH + os.sep + dist_file
-
-        # Skip renaming/moving anything if content has already been moved.
-        if not os.path.exists(production_file):
-
-            # Move sources.ini.dist to sources.ini
-            os.rename(dist_file, production_file)
 
 
     def update_version_tag_in_files(files, release_version):
@@ -355,8 +343,6 @@ def main():
     create_src_archive(EXPORT_PATH, OUTPUT_DIR, release_version)
 
     compile_python_code(CX_FREEZE_SETUP)
-
-    update_dist_files(SOURCES_DIST, SOURCES_PRODUCTION)
 
     update_package_dir(PACKAGE_DIR)
 
