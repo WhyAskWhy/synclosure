@@ -20,10 +20,13 @@
     <?define MyAppCurrentMaintainer = "Deoren Moor"?>
     <?define MyAppCopyright="Original code and name (C) by raphael balimann, 2004. Modifications (C) $(var.MyAppCopyrightYear) $(var.MyAppCopyrightOwner)"?>
 
-    <!-- In the same directory as the WiX project files -->
-    <?define MyAppReadMePath = "..\package\docs\readme.txt" ?>
-    <?define MyAppIconPath = "synclosure.ico"?>
-    <?define MyAppLicensePath = "..\package\licenses\synclosure\license.rtf"?>
+    <!-- Directory containing files to be installed (excluding dir) -->
+    <?define PackageDir = "..\package"?>
+
+    <?define MyAppIcon = "synclosure.ico"?>
+    <?define MyAppIconPath = "$(var.PackageDir)\$(var.MyAppIcon)"?>
+    <?define MyAppReadMePath = "$(var.PackageDir)\docs\readme.txt" ?>
+    <?define MyAppLicensePath = "$(var.PackageDir)\licenses\synclosure\license.rtf"?>
 
     <!--
     <?define THIS = "THAT"?>

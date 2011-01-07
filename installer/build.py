@@ -230,6 +230,13 @@ def main():
         if DEBUG_ON: print compile_command
         os.system(compile_command)
 
+    def get_base_name(file_name):
+        """Utility function to return the name of a file without ext"""
+
+        file = os.path.split(file_name)[1]
+        base_name = os.path.splitext(file)[0]
+        return base_name
+
     def build_wix_project(src_files, project_file, release_version, \
         output_dir):
         """Build MSI (Windows Installer) file"""
@@ -245,6 +252,17 @@ def main():
         else:
             msi_version = release_version
 
+        heat_output_dir = os.path.split(project_file)[0]
+        heat_file = heat_output_dir + os.sep + 'HeatFile.wxs'
+        # heat_command = \
+        # """heat dir "%s" -dr %s -cg %s -gg -sf -srd -var "%s" -out "%s" """ % \
+            # (src_files, 'MYPROGRAMDIR', 'CMP_PackageFilesGroup', \
+            # 'var.PackageDir', heat_file)
+        heat_command = \
+        """heat dir "%s" -dr %s -cg %s -gg -sf -srd -out "%s" -sw%s -nologo """ \
+            % (src_files, 'MYPROGRAMDIR', 'CMP_PackageFilesGroup', heat_file, \
+            '5150')
+
         candle_cmd_line_vars = "-dMyAppVersion=%s" % (msi_version)
 
         wix_extensions = """ -ext "%s" -ext "%s" """ \
@@ -257,15 +275,23 @@ def main():
         output_file_full_path = output_dir + os.sep + output_file_prefix
 
         candle_command = \
-            """candle -nologo "%s" "%s" %s -o "%s.wixobj" """ \
-            % (project_file, candle_cmd_line_vars, wix_extensions, output_file_full_path)
+            """candle -nologo "%s" "%s" "%s" %s """ \
+            % (project_file, heat_file, candle_cmd_line_vars, \
+            wix_extensions)
 
+        # http://stackoverflow.com/questions/1599079/wix-heat-and-wxi-file
         light_command = \
-            """light -nologo "%s.wixobj" -o "%s.msi" %s """ \
-            % (output_file_full_path, output_file_full_path, wix_extensions)
+            """light -nologo "%s\\%s.wixobj" "%s\\%s.wixobj" -b "%s" -o "%s.msi" %s """ \
+            % (output_dir, get_base_name(project_file), output_dir, \
+            get_base_name(heat_file), src_files, output_file_full_path, \
+            wix_extensions)
 
-        if DEBUG_ON: print "candle_command: %s" % candle_command
-        if DEBUG_ON: print "light_command: %s" % light_command
+        if DEBUG_ON: print "\nheat_command: %s" % heat_command
+        if DEBUG_ON: print "\ncandle_command: %s" % candle_command
+        if DEBUG_ON: print "\nlight_command: %s" % light_command
+
+        if INFO_ON: print "  * Calling heat ..."
+        os.system (heat_command)
 
         if INFO_ON: print "  * Calling candle ..."
         os.system (candle_command)

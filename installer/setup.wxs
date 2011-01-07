@@ -18,6 +18,12 @@
   
 -->
 
+<!--
+    TODO:
+
+    * http://stackoverflow.com/questions/471424/wix-tricks-and-tips/1801464#1801464
+-->
+
 <?include setup.wxi ?>
 
     <!-- $(var.MyAppVersion) is set via command-line -->
@@ -66,9 +72,10 @@
         <!--Directory structure-->
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
-
                 <Directory
                      Id="MyAppPublisherDir" Name="$(var.MyAppPublisher)" >
+
+                    <!-- This particular Id is needed by WixUI_InstallDir -->
                     <Directory
                          Id="MYPROGRAMDIR" Name="$(var.MyAppName)" />
                 </Directory>
@@ -89,18 +96,6 @@
         </Directory>
 
         <!--Components-->
-        <DirectoryRef Id="MYPROGRAMDIR">
-            <Component
-                 Id="CMP_ReadMeTXT"
-                 Guid="{39D96221-737B-4FC0-B195-16D80ED03AD5}">
-                <File
-                     Id="FILE_ReadMeTXT"
-                     Source="$(var.MyAppReadMePath)" KeyPath="yes" />
-            </Component>
-        </DirectoryRef>
-
-        <!-- ISS Shortcuts: App, Readme, WebLinks and Desktop.
-              TODO: Add option for Desktop shortcut -->
 
         <!--Start Menu Shortcuts-->
         <DirectoryRef Id="MyShortcutsDir">
@@ -109,9 +104,15 @@
 
                 <Shortcut
                      Id="DocumentationStartMenuShortcut"
-                     Name="Documentation"
+                     Name="ReadMe"
                      Description="Read $(var.MyAppName) Documentation"
-                     Target="[MYPROGRAMDIR]readme.txt" />
+                     Target="[MYPROGRAMDIR]docs\readme.txt" />
+
+                <Shortcut
+                     Id="MyAppDirShortcut"
+                     Name="$(var.MyAppName)"
+                     Description="$(var.MyPackageDescription)"
+                     Target="[MYPROGRAMDIR]" />
 
                 <Shortcut
                      Id="UninstallShortcut"
@@ -170,12 +171,11 @@
             <Component Id="CMP_MyAppDesktopShortcut" 
                        Guid="{0006EC13-99F7-4378-AE8C-BFC3983AB95E}">
 
-                <!-- FIXME: This is a stub entry -->
                 <Shortcut
-                     Id="MyAppShortcut"
+                     Id="MyAppDesktopShortcut"
                      Name="$(var.MyAppName)"
                      Description="$(var.MyPackageDescription)"
-                     Target="[MYPROGRAMDIR]readme.txt" />
+                     Target="[MYPROGRAMDIR]" />
 
                 <RegistryValue
                      Root="HKCU"
@@ -190,7 +190,9 @@
         <!--Features-->
         <Feature
              Id="MainProduct" Title="Main Product" Display="hidden" Level="1">
-            <ComponentRef Id="CMP_ReadMeTXT" />
+
+            <!-- Components produced by Heat -->
+            <ComponentGroupRef Id="CMP_PackageFilesGroup" />
         </Feature>
 
         <Feature
