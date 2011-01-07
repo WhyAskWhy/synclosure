@@ -250,7 +250,7 @@ def main():
         if release_version[0:3] == "dev":
             msi_version = '0.0.' + str(release_version[9:])
         else:
-            msi_version = release_version
+            msi_version = str(release_version) + '.0'
 
         project_files_dir = os.path.split(project_file)[0]
         heat_file = project_files_dir + os.sep + 'HeatFile.wxs'
