@@ -252,8 +252,8 @@ def main():
         else:
             msi_version = release_version
 
-        heat_output_dir = os.path.split(project_file)[0]
-        heat_file = heat_output_dir + os.sep + 'HeatFile.wxs'
+        project_files_dir = os.path.split(project_file)[0]
+        heat_file = project_files_dir + os.sep + 'HeatFile.wxs'
         # heat_command = \
         # """heat dir "%s" -dr %s -cg %s -gg -sf -srd -var "%s" -out "%s" """ % \
             # (src_files, 'MYPROGRAMDIR', 'CMP_PackageFilesGroup', \
@@ -275,16 +275,16 @@ def main():
         output_file_full_path = output_dir + os.sep + output_file_prefix
 
         candle_command = \
-            """candle -nologo "%s" "%s" "%s" %s """ \
+            """candle -nologo "%s" "%s" "%s" %s -o "%s"\\ """ \
             % (project_file, heat_file, candle_cmd_line_vars, \
-            wix_extensions)
+            wix_extensions, project_files_dir)
 
         # http://stackoverflow.com/questions/1599079/wix-heat-and-wxi-file
         light_command = \
-            """light -nologo "%s\\%s.wixobj" "%s\\%s.wixobj" -b "%s" -o "%s.msi" %s """ \
-            % (output_dir, get_base_name(project_file), output_dir, \
-            get_base_name(heat_file), src_files, output_file_full_path, \
-            wix_extensions)
+            """light -nologo "%s\\%s.wixobj" "%s\\%s.wixobj" -b "%s" -spdb -o "%s.msi" %s """ \
+            % (project_files_dir, get_base_name(project_file), \
+            project_files_dir, get_base_name(heat_file), src_files, \
+            output_file_full_path, wix_extensions)
 
         if DEBUG_ON: print "\nheat_command: %s" % heat_command
         if DEBUG_ON: print "\ncandle_command: %s" % candle_command
