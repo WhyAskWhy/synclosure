@@ -48,8 +48,8 @@
         <!-- http://www.tramontana.co.hu/wix/lesson4.php#4.2 -->
         <Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
         <Upgrade Id="$(var.MyProductUpgradeCode)">
-            <UpgradeVersion Minimum="$(var.ProductVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" /> 
-            <UpgradeVersion Minimum="0.0.1" IncludeMinimum="yes" Maximum="$(var.ProductVersion)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" /> 
+            <UpgradeVersion Minimum="$(var.MyAppVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" /> 
+            <UpgradeVersion Minimum="0.0.1" IncludeMinimum="yes" Maximum="$(var.MyAppVersion)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" /> 
         </Upgrade>
 
         <Condition Message="Downgrading is not supported. Please uninstall the current version in order to install this version."> 
