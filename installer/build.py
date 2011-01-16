@@ -321,7 +321,7 @@ def main():
                     time.sleep(3)
                     cleanup_attempts += 1
                     cleanup_error = str(sys.exc_info()[:2])
-                    cleanup_build_env(dir, OUTPUT_DIR, \
+                    cleanup_build_env(dir, BUILD_DIR, \
                         MAX_ATTEMPTS, cleanup_attempts, cleanup_error)
                 else:
                     cleanup_attempts = 0
