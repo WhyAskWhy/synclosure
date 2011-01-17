@@ -304,8 +304,7 @@ def main():
         """Cleanup build area"""
 
         if cleanup_attempts == MAX_ATTEMPTS:
-            sys.exit("[ERROR] Problems cleaning build env: %s") % \
-                cleanup_error
+            sys.exit("[ERROR] Problems cleaning build env: %s" % cleanup_error)
 
         if INFO_ON: print "[INFO] Cleaning build directory"
         os.chdir(BUILD_DIR)
@@ -315,12 +314,11 @@ def main():
                 if DEBUG_ON: print "  * [DEBUG] Attempting to remove %s" % dir
                 try:
                     shutil.rmtree(dir)
-                except:
+                except Exception, cleanup_error:
                     # If there are problems removing exported files, wait a few
                     # moments and try again until MAX_ATTEMPTS is reached.
                     time.sleep(3)
                     cleanup_attempts += 1
-                    cleanup_error = str(sys.exc_info()[:2])
                     cleanup_build_env(dir, BUILD_DIR, \
                         MAX_ATTEMPTS, cleanup_attempts, cleanup_error)
                 else:
