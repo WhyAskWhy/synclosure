@@ -12,14 +12,14 @@ Synclosure automatically downloads files found in RSS enclosures.
 import sys
 import os
 import os.path
-import urllib2
-import ConfigParser
+import urllib.request, urllib.error, urllib.parse
+import configparser
 
 # parse command line arguments, 'sys.argv'
 from optparse import OptionParser
 
 import re
-import httplib
+import http.client
 import time
 import socket
 
@@ -49,7 +49,7 @@ __contributors__ = ["deoren <http://whyaskwhy.org/>",]
 def main():
 
     # Create customized user agent
-    opener = urllib2.build_opener()
+    opener = urllib.request.build_opener()
     opener.addheaders = [('User-agent', __product__)]
 
 
@@ -107,11 +107,11 @@ def main():
     def ShowProductInfo():
         """Print out app name, version, copyright and license info"""
         # FIXME: Improve this     
-        print "\n",__product__, "\n"
-        print '-' * 65
-        print __copyright__
-        print __license__
-        print '-' * 65, "\n"
+        print("\n",__product__, "\n")
+        print('-' * 65)
+        print(__copyright__)
+        print(__license__)
+        print('-' * 65, "\n")
 
     def WriteFile(filename, msg):
         """Wrapper to safely read/write content to source and cache files"""
@@ -125,8 +125,8 @@ def main():
                 f.write(msg)
                 f.close()
             except:
-                print nl+'[error] couldnt create/access/read file (' \
-                    + filename + '), ' + 'check permissions.'+nl
+                print(nl+'[error] couldnt create/access/read file (' \
+                    + filename + '), ' + 'check permissions.'+nl)
                 return False
 
     #load a file into a list, ignore lines beginning with a '#'
@@ -154,57 +154,57 @@ def main():
         """Wrapper for urlopen to make use of retrylimit, waittime values"""
 
         # Filter out invalid content from author's XML feed
-        if debugmodeon: print "original url is %s" % url
+        if debugmodeon: print("original url is %s" % url)
         url = SanitizeName(url, urlfilter, 'url')
-        if debugmodeon: print "sanitized url is %s" % url
+        if debugmodeon: print("sanitized url is %s" % url)
 
         try:
             # Create a file handle for enclosure (after redirects).  Use customized user agent.
             remotefile_fh = opener.open(url)
 
-        except urllib2.HTTPError, e:
+        except urllib.error.HTTPError as e:
             # FIXME: Loop through a dictionary and define both template output and action based on that?
             if e.code == 404:
-                print '*' * 60
-                print '[WARNING] NOT FOUND:', url            
+                print('*' * 60)
+                print('[WARNING] NOT FOUND:', url)            
                 if ignorenotfound:
-                    print '[NOTICE ] Adding url to cache'
+                    print('[NOTICE ] Adding url to cache')
                     WriteFile(cache, url+'\n')
-                print '*' * 60, "\n\n"
+                print('*' * 60, "\n\n")
                 oldenclosures.append(url)
 
             elif e.code == 403:
-                print '*' * 60
-                print '[WARNING] ACCESS DENIED:', url            
+                print('*' * 60)
+                print('[WARNING] ACCESS DENIED:', url)            
                 if ignorenotfound:
-                    print '[NOTICE ] Adding url to cache'
+                    print('[NOTICE ] Adding url to cache')
                     WriteFile(cache, url+'\n')
-                print '*' * 60, "\n"
+                print('*' * 60, "\n")
                 oldenclosures.append(url)        
             else:
-                print "geturl HTTPError %s on url %s" % (e.code, url)
+                print("geturl HTTPError %s on url %s" % (e.code, url))
                 pass # FIXME: Is this being handled?  - May not be worth worrying about?
 
         # FIXME: This will need better handling
-        except urllib2.URLError, e:
-            print "geturl URLError %s on url %s" % (e.reason, url)
+        except urllib.error.URLError as e:
+            print("geturl URLError %s on url %s" % (e.reason, url))
 
         # Perhaps handle socket.error differently?    
-        except (socket.timeout, socket.error, IOError, httplib.BadStatusLine, httplib.IncompleteRead), errdesc:
+        except (socket.timeout, socket.error, IOError, http.client.BadStatusLine, http.client.IncompleteRead) as errdesc:
             # Presumably the server have borked the connection for an unknown reason. Let's try again.
             if not retrylimit == 0:
                 (dir, file) = os.path.split(url)
-                print '*' * 60
-                print "[WARNING] Failed to download %s to %s" % (file, dir)
-                print "\t Error Description: ", errdesc, "\n"
-                print "\tRetrying ..."
-                print '*' * 60
+                print('*' * 60)
+                print("[WARNING] Failed to download %s to %s" % (file, dir))
+                print("\t Error Description: ", errdesc, "\n")
+                print("\tRetrying ...")
+                print('*' * 60)
                 time.sleep(waittime)
                 retrylimit -=1
                 DownloadFile(url, downloadfolder, retrylimit, waittime)
             else:
                 # Give up on this file (for this session) and proceed to the next one
-                print "\t\tRetry limit exhausted, moving on to next file"
+                print("\t\tRetry limit exhausted, moving on to next file")
 
         else:
             # no problems encountered thus far
@@ -217,28 +217,28 @@ def main():
                 enclosurefilename = os.path.join(downloadfolder, remotefile)
 
             if debugmodeon:
-                print "Original enclosure url:", url
-                print "Enc url after redirect:", finalurl        
+                print("Original enclosure url:", url)
+                print("Enc url after redirect:", finalurl)        
 
             localfilename = SanitizeName(enclosurefilename, 
                 filenamefilter, type='file')
 
             try:            
                 localfile_fh = open(localfilename, 'wb')
-            except IOError, errdesc:
+            except IOError as errdesc:
                 # FIXME: This "if" section 'may' not be necessary if the 404 section catches all of the invalid links
                 if len(remotefile) == 0:                
                     # FIXME: Update comment - make sense?
                     # If the url listed in the enclosure was not to a file then add
                     # it to the cache so we will not try to download it again.
                     # ex: http://example.com/                 
-                    print '\n', '*' * 60
-                    print '[NOTICE ]  INVALID LINK ENCOUNTERED'
-                    print '*' * 60
+                    print('\n', '*' * 60)
+                    print('[NOTICE ]  INVALID LINK ENCOUNTERED')
+                    print('*' * 60)
 
                     if ignoreinvalidlinks:                                    
-                        print '\tAdding: ', url, \
-                            '\n\tto cache to prevent future download attempts'
+                        print('\tAdding: ', url, \
+                            '\n\tto cache to prevent future download attempts')
 
                         # Here we're using the the global 'enclosure' value instead of the sanitized 'url'
                         # value.  This is because the check for previously downloaded enclosures in the
@@ -247,7 +247,7 @@ def main():
                         WriteFile(cache, enclosure+'\n')
                         oldenclosures.append(enclosure)            
                     else:
-                        print "Skipping invalid link"
+                        print("Skipping invalid link")
                 #else:
                     # The problem is most likely a filename issue.  Previous revs 
                     # bombed out due to invalid characters.
@@ -265,30 +265,30 @@ def main():
 
                 # if the file is currently being downloaded, a Ctrl-C will be caught here
                 except (KeyboardInterrupt, SystemExit):
-                    if debugmodeon: print "here i am after remotefile_fh.read()"
+                    if debugmodeon: print("here i am after remotefile_fh.read()")
 
                     # If user wishes to remove failed downloaded file, do so
                     if removepartialfile:
-                        if debugmodeon: print "removepartialfile setting is on"
+                        if debugmodeon: print("removepartialfile setting is on")
                         RemoveFile(localfile_fh, localfilename)
                     raise
 
-                except (socket.timeout, IOError, httplib.BadStatusLine), errdesc:
+                except (socket.timeout, IOError, http.client.BadStatusLine) as errdesc:
                     # Presumably the server have borked the connection for an unknown reason. Let's try again.
                     if not retrylimit == 0:
                         (dir, file) = os.path.split(enclosurefilename)
-                        print '*' * 60
-                        print "[NOTICE] Failed to download %s to %s" % (file, dir)
-                        print "\t Error Description: ", errdesc, "\n"
-                        print "\tRetrying ..."
-                        print '*' * 60
+                        print('*' * 60)
+                        print("[NOTICE] Failed to download %s to %s" % (file, dir))
+                        print("\t Error Description: ", errdesc, "\n")
+                        print("\tRetrying ...")
+                        print('*' * 60)
                         time.sleep(waittime)
                         retrylimit -=1
                         DownloadFile(enclosure, enclosurefilename, 
                             retrylimit, waittime)
                     else:
                         # Give up on this file (for this session) and proceed to the next one
-                        print "\t\tRetry limit exhausted, moving on to next file"
+                        print("\t\tRetry limit exhausted, moving on to next file")
 
                 else:
                     # File was successfully downloaded
@@ -310,19 +310,19 @@ def main():
 
         if str(type).lower() == "folder":
             cleanname = re.sub(filter, "", name)
-            if debugmodeon: print "cleanname is %s" % cleanname
+            if debugmodeon: print("cleanname is %s" % cleanname)
             return cleanname
 
         elif str(type).lower() == "file":
             # Strip away question mark and all characters follow it.
             file = name.split('?').pop(0)
             cleanname = re.sub(filter, "", file)
-            if debugmodeon: print "cleanname is %s" % cleanname
+            if debugmodeon: print("cleanname is %s" % cleanname)
             return cleanname
 
         elif str(type).lower() == "url":
             cleanname = re.sub(filter, "", name)
-            if debugmodeon: print "cleanname is %s" % cleanname
+            if debugmodeon: print("cleanname is %s" % cleanname)
             return cleanname
 
         else:
@@ -339,12 +339,12 @@ def main():
         localfile_fh.close()
 
         # remove file (if exists)
-        if debugmodeon:print file
+        if debugmodeon:print(file)
         if os.path.isfile(file):
             #urllib.urlcleanup()
-            print "[NOTICE  ]\t* Removing partial file"
+            print("[NOTICE  ]\t* Removing partial file")
             os.unlink(file)
-            if debugmodeon:print "just removed file"
+            if debugmodeon:print("just removed file")
 
 
     ShowProductInfo()
@@ -421,7 +421,7 @@ def main():
         downloadfolder = os.getcwd()
 
     feedcount = len(feedlist)
-    print "Beginnging feed processing ..."
+    print("Beginnging feed processing ...")
     for feed in feedlist:
         try:
             parsed = feedparser.parse(feed, agent=__product__)
@@ -429,14 +429,14 @@ def main():
             # If parser did not find a title from the feed url, consider it
             # to be invalid ...
             if not 'title' in parsed['feed']:
-                print "[WARNING] Skipping invalid feed: %s \n" % feed
+                print("[WARNING] Skipping invalid feed: %s \n" % feed)
                 continue
 
             # Don't echo 'parsing' for empty lines
             # FIXME: Isn't this already being handled by ParseFile?
             if len(feed) != 0: 
                 # Show a countdown of the remaining feeds to be parsed (after this one) using 5 digit padding
-                print '\n[%.5d left]' % (feedcount -1), 'parsing: ' + parsed['feed']['title']
+                print('\n[%.5d left]' % (feedcount -1), 'parsing: ' + parsed['feed']['title'])
                 feedcount -= 1
 
         except KeyboardInterrupt:
@@ -446,7 +446,7 @@ def main():
             continue
 
         for entry in parsed['entries']:
-            if entry.has_key('enclosures'):
+            if 'enclosures' in entry:
                 for _enclosure in entry['enclosures']:
                     enclosure = _enclosure['url']
                     if enclosure not in oldenclosures:
@@ -459,7 +459,7 @@ def main():
                                 continue
 
                         try:
-                            print 'downloading: ' + enclosure.split("/")[-1]
+                            print('downloading: ' + enclosure.split("/")[-1])
 
                             if usesubfolders:
                                 # Apply the regular expression against the title of the RSS Podcast feed and 
@@ -491,7 +491,7 @@ def main():
                             # That's all folks
                             sys.exit("[quitting]\t* Aborting on user request")
 
-    print "\nAll feeds parsed. Thank you for using",  __product__
+    print("\nAll feeds parsed. Thank you for using",  __product__)
 
 if __name__ == "__main__":
     main()

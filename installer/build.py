@@ -1,7 +1,7 @@
 # $Id$
 # $HeadURL$
 
-# Purpose: 
+# Purpose:
 #   Build installers for upload to hosting services.The goal is to use
 #   this for development and release builds.
 
@@ -61,7 +61,7 @@ def main():
     # #####################
     # Project Files
     # #####################
-    # These need to stay as separate values from 
+    # These need to stay as separate values from
     # files_with_placeholder_content var due to use in build functions?
     CX_FREEZE_SETUP = EXPORT_PATH + os.sep + 'setup_freeze.py'
 
@@ -96,7 +96,7 @@ def main():
     def export_svn(url_or_wkco, EXPORT_PATH):
         """Exports clean files from SVN working copy"""
 
-        if INFO_ON: print '[INFO] Exporting files from %s' % url_or_wkco
+        if INFO_ON: print('[INFO] Exporting files from %s' % url_or_wkco)
         client = pysvn.Client()
 
         # http://pysvn.tigris.org/docs/pysvn_prog_ref.html#pysvn_client_export
@@ -116,16 +116,16 @@ def main():
            installation of Python"""
 
         if os.path.exists(PACKAGE_DIR):
-            if INFO_ON: 
-                print '[INFO] Compiled Python code exists, skipping compilation'
+            if INFO_ON:
+                print('[INFO] Compiled Python code exists, skipping compilation')
 
         else:
-            if INFO_ON: print '[INFO] Compiling Python code'
+            if INFO_ON: print('[INFO] Compiling Python code')
             # Using triple quotes to handle path with spaces
             compile_command = """python "%s" build """ % python_setup_file
             result = os.system(compile_command)
             if DEBUG_ON:
-                print "The result of the Python code compile is: %s" % result
+                print("The result of the Python code compile is: %s" % result)
 
 
     # FIXME: Function references several 'CONSTANTS' without them being passed.
@@ -136,7 +136,7 @@ def main():
         if not os.path.exists(PACKAGE_DIR):
 
             # Move compiled files to 'package' dir.
-            os.rename(EXPORT_PATH + os.sep + 'build\exe.win32-' \
+            os.rename(EXPORT_PATH + os.sep + r'build\exe.win32-' \
                 + INSTALLED_PYTHON_VERSION, PACKAGE_DIR)
             os.rmdir(EXPORT_PATH + os.sep + 'build')
 
@@ -159,13 +159,13 @@ def main():
         """Update placeholder version information within a list of files"""
 
         for file in files:
-            if INFO_ON: print "[INFO] Updating version tag in: %s" % file
+            if INFO_ON: print("[INFO] Updating version tag in: %s" % file)
 
             # Open tmp file, read in orig and make changes in tmp file.
             o = open("updated_file.tmp","a")
             for line in open(file):
                 line = line.replace(APP_RELEASE_VER_PLACEHOLDER, release_version)
-                o.write(line) 
+                o.write(line)
             o.close()
 
             # Replace original with updated copy
@@ -181,7 +181,7 @@ def main():
 
         dest_file = dst_dir + os.sep + dest_file
 
-        if INFO_ON: print "Creating source archive of %s" % src_dir
+        if INFO_ON: print("Creating source archive of %s" % src_dir)
         # Max compression, Multi-threading on, Solid archive creation on
         archive_command = """%s -t7z -mx=9 -mmt=on -ms=on a "%s" "%s" """ % \
             (archive_app, dest_file, src_dir)
@@ -191,14 +191,14 @@ def main():
         """Create archives for distribution"""
 
         os.chdir(src_dir)
-        
+
         archive_app = "7z.exe"
         dest_file = """%s-%s-win32-bin.7z""" % \
             (APPLICATION_NAME.lower(), release_version)
 
         dest_file = dst_dir + os.sep + dest_file
 
-        if INFO_ON: print "Creating binary archive of %s" % src_dir
+        if INFO_ON: print("Creating binary archive of %s" % src_dir)
         # Max compression, Multi-threading on, Solid archive creation on
         archive_command = """%s -t7z -mx=9 -mmt=on -ms=on a "%s" "%s" """ % \
             (archive_app, dest_file, src_dir)
@@ -208,7 +208,7 @@ def main():
         revision):
         """Produce an Inno Setup installer"""
 
-        if INFO_ON: print '[INFO] Compiling Inno Setup project'
+        if INFO_ON: print('[INFO] Compiling Inno Setup project')
 
         # Set iss_version to 1.0.SVNRevision
         # Note: This is the installer file version, NOT Synclosure version.
@@ -227,7 +227,7 @@ def main():
             """iscc /Q %s /O"%s" "%s" """ % \
             (iscc_cmd_line_vars, OUTPUT_DIR, project_file)
 
-        if DEBUG_ON: print compile_command
+        if DEBUG_ON: print(compile_command)
         os.system(compile_command)
 
     def get_base_name(file_name):
@@ -243,7 +243,7 @@ def main():
 
         os.chdir(src_files)
 
-        if INFO_ON: print '[INFO] Compiling WiX project'
+        if INFO_ON: print('[INFO] Compiling WiX project')
 
         # If this is a dev build, set WiX project version to 0.0.SVNRevision
         # Otherwise, set WiX project version to release_version
@@ -286,17 +286,17 @@ def main():
             project_files_dir, get_base_name(heat_file), src_files, \
             output_file_full_path, wix_extensions)
 
-        if DEBUG_ON: print "\nheat_command: %s" % heat_command
-        if DEBUG_ON: print "\ncandle_command: %s" % candle_command
-        if DEBUG_ON: print "\nlight_command: %s" % light_command
+        if DEBUG_ON: print("\nheat_command: %s" % heat_command)
+        if DEBUG_ON: print("\ncandle_command: %s" % candle_command)
+        if DEBUG_ON: print("\nlight_command: %s" % light_command)
 
-        if INFO_ON: print "  * Calling heat ..."
+        if INFO_ON: print("  * Calling heat ...")
         os.system (heat_command)
 
-        if INFO_ON: print "  * Calling candle ..."
+        if INFO_ON: print("  * Calling candle ...")
         os.system (candle_command)
 
-        if INFO_ON: print "\n  * Calling light ..."
+        if INFO_ON: print("\n  * Calling light ...")
         os.system (light_command)
 
     def cleanup_build_env(dirs_to_remove, BUILD_DIR, MAX_ATTEMPTS, \
@@ -306,15 +306,15 @@ def main():
         if cleanup_attempts == MAX_ATTEMPTS:
             sys.exit("[ERROR] Problems cleaning build env: %s" % cleanup_error)
 
-        if INFO_ON: print "[INFO] Cleaning build directory"
+        if INFO_ON: print("[INFO] Cleaning build directory")
         os.chdir(BUILD_DIR)
 
         for dir in dirs_to_remove:
             if os.path.exists(dir):
-                if DEBUG_ON: print "  * [DEBUG] Attempting to remove %s" % dir
+                if DEBUG_ON: print("  * [DEBUG] Attempting to remove %s" % dir)
                 try:
                     shutil.rmtree(dir)
-                except Exception, cleanup_error:
+                except Exception as cleanup_error:
                     # If there are problems removing exported files, wait a few
                     # moments and try again until MAX_ATTEMPTS is reached.
                     time.sleep(3)
@@ -332,8 +332,8 @@ def main():
 # Initial Setup
 #####################################
 
-    if INFO_ON: print "[INFO] Starting %s (%s) " % \
-        (os.path.basename(sys.argv[0]), DATE)
+    if INFO_ON: print("[INFO] Starting %s (%s) " % \
+        (os.path.basename(sys.argv[0]), DATE))
 
     cleanup_build_env(DIRS_TO_REMOVE_DURING_CLEANUP, BUILD_DIR, MAX_ATTEMPTS)
 
@@ -354,12 +354,12 @@ def main():
     else:
         release_version = APPLICATION_RELEASE_VERSION
 
-    if DEBUG_ON: 
-        print "[DEBUG] release_version is %s" % release_version
+    if DEBUG_ON:
+        print("[DEBUG] release_version is %s" % release_version)
 
     if INFO_ON:
-        print '[INFO] Attempting to build %s %s' \
-            % (APPLICATION_NAME, release_version)
+        print('[INFO] Attempting to build %s %s' \
+            % (APPLICATION_NAME, release_version))
 
     update_version_tag_in_files(files_with_placeholder_content, release_version)
 
